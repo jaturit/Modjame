@@ -150,15 +150,13 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .sync-ok{background:#E8F8F0;color:var(--green-dark)}
 .sync-loading{background:#FFF3E0;color:#E67E22}
 .sync-error{background:#FFEBEE;color:var(--primary)}
-.announce-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
-.announce-box{background:var(--card);border-radius:var(--radius);padding:0;width:100%;max-width:380px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:scaleIn .4s ease}
-.announce-header{background:linear-gradient(135deg,var(--primary),var(--accent));padding:20px 24px;color:#fff}
-.announce-header h2{font-family:'Prompt',sans-serif;font-weight:800;font-size:20px;margin:0}
-.announce-body{padding:20px 24px}
-.announce-body p{font-size:15px;line-height:1.7;color:var(--text);white-space:pre-line}
-.announce-body img{width:100%;border-radius:12px;margin-top:12px}
-.announce-close{width:100%;padding:16px;background:var(--bg);border:none;border-top:1px solid var(--border);font-family:'Prompt',sans-serif;font-weight:700;font-size:16px;color:var(--primary);cursor:pointer}
-.announce-close:active{background:var(--border)}
+.ann-card{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow);border-left:5px solid var(--accent)}
+.ann-card-header{background:linear-gradient(135deg,var(--primary),var(--accent));padding:14px 20px;color:#fff;font-family:'Prompt',sans-serif;font-weight:700;font-size:17px}
+.ann-card-body{padding:16px 20px}
+.ann-card-body p{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-line;margin:0}
+.ann-card-body img{width:100%;border-radius:10px;margin-top:12px}
+.line-warn{background:#E8F5E9;border:2px solid #A5D6A7;border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;text-align:center}
+.line-warn a{display:inline-block;margin-top:8px;padding:10px 20px;background:linear-gradient(135deg,#06C755,#04B34F);color:#fff;border-radius:10px;font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;text-decoration:none}
 .upload-area{width:100%;aspect-ratio:1;max-width:180px;margin:8px auto 12px;border:3px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;background:var(--card);transition:all .25s}
 .upload-area:active{transform:scale(.97)}
 .upload-area.has-img{border-style:solid;border-color:var(--green)}
@@ -187,6 +185,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="page active" id="homePage">
   <div class="hero-banner"><div class="hero-title">สั่งของสดจากตลาด</div><div class="hero-subtitle">ส่งถึงบ้าน ทุกวัน 🚛</div><div class="hero-emoji">🦐</div></div>
+  <div id="annArea"></div>
+  <div id="lineBrowserWarn"></div>
   <div id="featuredArea"></div>
   <div class="section-title">📦 หมวดหมู่สินค้า</div>
   <div class="category-grid" id="categoryGrid"></div>
@@ -296,7 +296,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="bottom-bar" id="bottomBar"><div class="bottom-bar-content"><div class="bottom-bar-info"><div class="bottom-bar-items" id="bottomItems">0 รายการ</div><div class="bottom-bar-total" id="bottomTotal">฿0</div></div><button class="bottom-bar-btn" onclick="showCart()">🛒 ดูตะกร้า</button></div></div>
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
-<div id="announcePopup"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -364,9 +363,8 @@ async function loadData(){
   if(s&&s.settings)settings=Object.assign(settings,s.settings);
   document.getElementById('homeLoading').style.display='none';
   renderHome();
-  // ★ โหลดประกาศ
   await loadAnnouncement();
-  if(!sessionStorage.getItem('ann_seen'))showAnnouncement();
+  checkLineBrowser();
 }
 
 // ★ SAVE TO SHEETS (Admin) ★
@@ -439,7 +437,8 @@ function getLocation(){var btn=document.getElementById('locBtn');btn.innerHTML='
   navigator.geolocation.getCurrentPosition(function(pos){custLat=pos.coords.latitude.toFixed(6);custLng=pos.coords.longitude.toFixed(6);
     btn.innerHTML='✅ ได้รับพิกัดแล้ว';btn.classList.add('done');btn.disabled=false;document.getElementById('locCard').classList.add('has-loc');
     document.getElementById('locResult').innerHTML='<div style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--green-dark);margin-top:8px;text-align:center">📍 '+custLat+', '+custLng+' <a href="https://www.google.com/maps?q='+custLat+','+custLng+'" target="_blank" style="color:#3498db">ดูแผนที่</a></div>';
-  },function(){showToast('อนุญาต GPS ก่อนนะครับ');btn.innerHTML='📍 กดแชร์พิกัด';btn.disabled=false},{enableHighAccuracy:true,timeout:15000})}
+  },function(){var isLine=/Line\//i.test(navigator.userAgent||'');
+    showToast(isLine?'❌ LINE ไม่รองรับ GPS กรุณาเปิดในเบราว์เซอร์':'อนุญาต GPS ก่อนนะครับ');btn.innerHTML='📍 กดแชร์พิกัด';btn.disabled=false},{enableHighAccuracy:true,timeout:15000})}
 
 // SLIP
 function handleSlip(input){if(!input.files||!input.files[0])return;var reader=new FileReader();reader.onload=function(e){custSlipImg=e.target.result;
@@ -516,19 +515,29 @@ function saveSettings(){
   var np=document.getElementById('adminNewPass').value.trim();if(np)settings.adminPass=np;
   apiPost({action:'saveSettings',settings:settings});showToast('บันทึกตั้งค่าแล้ว ✅')}
 
-// ★ ANNOUNCEMENT ★
+// ★ ANNOUNCEMENT (inline on homepage) ★
 async function loadAnnouncement(){
   var a=await apiGet('getAnnouncement');
-  if(a&&a.announcement)announcement=a.announcement}
-function showAnnouncement(){
-  if(!announcement.enabled)return;
-  var h='<div class="announce-overlay" onclick="if(event.target===this)closeAnnounce()"><div class="announce-box">';
-  h+='<div class="announce-header"><h2>'+(announcement.title||'📢 ประกาศ')+'</h2></div>';
-  h+='<div class="announce-body"><p>'+(announcement.message||'')+'</p>';
+  if(a&&a.announcement)announcement=a.announcement;
+  renderAnnouncement()}
+function renderAnnouncement(){
+  var el=document.getElementById('annArea');
+  if(!announcement.enabled||(!announcement.message&&!announcement.img)){el.innerHTML='';return}
+  var h='<div class="ann-card"><div class="ann-card-header">'+(announcement.title||'📢 ประกาศ')+'</div><div class="ann-card-body">';
+  if(announcement.message)h+='<p>'+announcement.message+'</p>';
   if(announcement.img)h+='<img src="'+announcement.img+'">';
-  h+='</div><button class="announce-close" onclick="closeAnnounce()">✅ รับทราบ</button></div></div>';
-  document.getElementById('announcePopup').innerHTML=h}
-function closeAnnounce(){document.getElementById('announcePopup').innerHTML='';sessionStorage.setItem('ann_seen','1')}
+  h+='</div></div>';
+  el.innerHTML=h}
+
+// ★ LINE Browser Detection ★
+function checkLineBrowser(){
+  var ua=navigator.userAgent||'';
+  var isLine=/Line\//i.test(ua);
+  var el=document.getElementById('lineBrowserWarn');
+  if(isLine){
+    var url=window.location.href;
+    el.innerHTML='<div class="line-warn"><div style="font-family:Prompt;font-weight:700;font-size:14px">⚠️ เปิดผ่าน LINE อยู่</div><div style="font-size:13px;color:var(--text-mid);margin-top:4px">GPS / แนบสลิปอาจใช้ไม่ได้ กรุณาเปิดในเบราว์เซอร์</div><a href="'+url+'" target="_blank">🌐 เปิดในเบราว์เซอร์</a></div>'
+  }else{el.innerHTML=''}}
 async function handleAnnImg(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
   annImg=await compressImage(input.files[0],500,0.75);
   var a=document.getElementById('annImgArea');
