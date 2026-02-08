@@ -330,16 +330,11 @@ async function loadData(){
   document.getElementById('homeLoading').style.display='block';
   document.getElementById('categoryGrid').innerHTML='';
   document.getElementById('featuredArea').innerHTML='';
-  console.log('🔄 Loading products...');
   var p=await apiGet('getProducts');
-  console.log('📦 Products response:',p);
   if(p&&p.cats){cats=p.cats;localStorage.setItem('of_cache',JSON.stringify(cats))}
   else{try{cats=JSON.parse(localStorage.getItem('of_cache'))||{}}catch(e){cats={}}}
-  console.log('🔄 Loading settings...');
   var s=await apiGet('getSettings');
-  console.log('⚙️ Settings response:',s);
   if(s&&s.settings)settings=Object.assign(settings,s.settings);
-  console.log('✅ Final settings:',JSON.stringify(settings));
   document.getElementById('homeLoading').style.display='none';
   renderHome();
 }
@@ -445,7 +440,6 @@ function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng=''
 function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ Admin</h3><div class="input-group"><label class="input-label">รหัสผ่าน</label><input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน" onkeydown="if(event.key===\'Enter\')doLogin()"></div><button class="btn-primary" onclick="doLogin()">🔓 เข้าสู่ระบบ</button><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-light)">รหัสเริ่มต้น: 1234</div>');
   setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
 function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
-  alert('คุณพิมพ์: ['+input+']\nรหัสในระบบ: ['+pass+']\nSettings loaded: '+JSON.stringify(settings));
   if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
 function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();
   document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
