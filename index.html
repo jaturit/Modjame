@@ -375,8 +375,13 @@ async function apiGet(action){
     try{return JSON.parse(text)}catch(e2){return null}}
   catch(e){showToast('⚠️ เชื่อมต่อไม่ได้');return null}}
 async function apiPost(data){
-  try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return true}
-  catch(e){showToast('⚠️ ส่งข้อมูลไม่ได้');return false}}
+  try{
+    // ใช้ no-cors + text/plain เพื่อหลีก CORS (Apps Script รองรับ)
+    var r=await fetch(API,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(data)});
+    return true;
+  }catch(e){showToast('⚠️ ส่งข้อมูลไม่ได้');return false}}
 
 // ★ LOAD DATA FROM SHEETS ★
 async function loadData(){
@@ -474,10 +479,11 @@ function clearSlip(){custSlipImg='';var a=document.getElementById('slipArea');a.
 
 // CONFIRM ORDER
 function confirmOrder(){
-  var name=document.getElementById('custName').value.trim();if(!name){showToast('กรุณากรอกชื่อ');return}
+  var name=document.getElementById('custName').value.trim();if(!name){showToast('กรุณากรอกชื่อ');document.getElementById('custName').focus();return}
+  var phone=document.getElementById('custPhone').value.trim();if(!phone){showToast('กรุณากรอกเบอร์โทร 📞');document.getElementById('custPhone').focus();return}
   if(!custLat||!custLng){showToast('กรุณากดแชร์พิกัด GPS ก่อน 📍');return}
   if(payMethod==='now'&&!custSlipImg){showToast('กรุณาแนบสลิปโอนเงิน 🧾');return}
-  var dept=document.getElementById('custDept').value.trim(),phone=document.getElementById('custPhone').value.trim(),addr=document.getElementById('custAddr').value.trim();
+  var dept=document.getElementById('custDept').value.trim(),addr=document.getElementById('custAddr').value.trim();
   var fee=payMethod==='later'?(Number(settings.laterFee)||20):0,total=gTotal()+fee;
   var oid='OF-'+Date.now().toString(36).toUpperCase();
   var oi=[];for(var id in cart){var p=findP(id);if(p)oi.push({name:p.name,price:p.price,qty:cart[id],emoji:p.emoji})}
