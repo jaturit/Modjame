@@ -117,8 +117,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .order-id{font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;color:var(--accent);background:#FFF3EB;padding:8px 18px;border-radius:20px;display:inline-block;margin-bottom:24px}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:12px 24px;border-radius:12px;font-family:'Prompt',sans-serif;font-weight:500;font-size:14px;z-index:200;opacity:0;transition:all .35s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* === ADMIN === */
 .admin-header{background:linear-gradient(135deg,#2D2A26,#4A4540);border-radius:var(--radius);padding:24px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden}
 .admin-header::before{content:'';position:absolute;top:-30%;right:-10%;width:180px;height:180px;background:rgba(255,255,255,.05);border-radius:50%}
 .admin-header h2{font-family:'Prompt',sans-serif;font-weight:800;font-size:22px;margin-bottom:4px;position:relative;z-index:1}
@@ -131,7 +129,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .admin-section-title{font-family:'Prompt',sans-serif;font-weight:700;font-size:18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .admin-cat-header{background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
 .admin-cat-name{font-family:'Prompt',sans-serif;font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
-.admin-cat-actions{display:flex;gap:6px}
 .admin-item{background:var(--card);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
 .admin-item-img{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;background:#f5f0ea}
 .admin-item-img img{width:100%;height:100%;object-fit:cover}
@@ -155,25 +152,40 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-light)}
 .empty-state-icon{font-size:48px;margin-bottom:12px}
 .dots-pattern{position:fixed;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle,#E0DBD4 1px,transparent 1px);background-size:24px 24px;opacity:.3;pointer-events:none;z-index:-1}
-
-/* === UPLOAD === */
 .upload-area{width:100%;aspect-ratio:1;max-width:220px;margin:0 auto 16px;border:3px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;overflow:hidden;position:relative;background:var(--card)}
 .upload-area:active{transform:scale(.97)}
 .upload-area.has-img{border-style:solid;border-color:var(--green)}
 .upload-area img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
-.upload-area .upload-icon{font-size:48px;margin-bottom:8px;transition:all .2s}
+.upload-area .upload-icon{font-size:48px;margin-bottom:8px}
 .upload-area .upload-text{font-family:'Prompt',sans-serif;font-weight:600;font-size:14px;color:var(--text-light);text-align:center}
 .upload-area .upload-hint{font-size:12px;color:var(--text-light);margin-top:4px}
 .upload-area .remove-img{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3}
 .upload-btns{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
-.upload-btns button{padding:10px 20px;border:2px solid var(--border);border-radius:12px;background:var(--card);font-family:'Prompt',sans-serif;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.upload-btns button{padding:10px 20px;border:2px solid var(--border);border-radius:12px;background:var(--card);font-family:'Prompt',sans-serif;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px}
 .upload-btns button:active{transform:scale(.95);background:var(--bg)}
-
-/* === MODAL === */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
 .modal-overlay.show{display:flex}
 .modal{background:var(--bg);border-radius:24px 24px 0 0;padding:24px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slideUp .3s ease}
 .modal h3{font-family:'Prompt',sans-serif;font-weight:700;font-size:20px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.export-box{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:var(--radius);padding:24px;color:#fff;text-align:center;margin-bottom:20px}
+.export-box h3{color:#fff;justify-content:center;margin-bottom:12px}
+.export-box p{font-size:14px;opacity:.85;margin-bottom:16px;line-height:1.6}
+.btn-export{padding:16px 32px;background:#fff;color:#764ba2;border:none;border-radius:14px;font-family:'Prompt',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn-export:active{transform:scale(.95)}
+.slip-upload{margin-top:16px}
+.slip-area{width:100%;max-width:260px;margin:10px auto;aspect-ratio:3/4;border:3px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;background:var(--card);transition:all .25s}
+.slip-area.has-img{border-style:solid;border-color:var(--green)}
+.slip-area img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.slip-area .remove-img{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3}
+.loc-section{margin-top:20px}
+.loc-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);padding:18px;transition:all .25s}
+.loc-card.has-loc{border-color:var(--green);background:#F0FFF4}
+.loc-btn{width:100%;padding:14px;background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;border:none;border-radius:12px;font-family:'Prompt',sans-serif;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;box-shadow:0 4px 12px rgba(52,152,219,.3)}
+.loc-btn:active{transform:scale(.97)}
+.loc-btn.done{background:linear-gradient(135deg,var(--green),var(--green-dark));box-shadow:0 4px 12px rgba(46,204,113,.3)}
+.loc-info{font-size:13px;color:var(--text-light);margin-top:8px;text-align:center;line-height:1.5}
+.loc-coords{font-family:'Prompt',sans-serif;font-weight:600;font-size:14px;color:var(--green-dark);margin-top:6px;text-align:center}
+.loc-note{background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:10px 14px;font-size:13px;color:#F57F17;margin-top:10px;display:flex;align-items:flex-start;gap:6px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -185,33 +197,42 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <button class="cart-btn" onclick="showCart()">🛒<div class="cart-badge" id="cartBadge">0</div></button>
   </div>
 </div>
-
 <div class="page active" id="homePage">
   <div class="hero-banner"><div class="hero-title">สั่งของสดจากตลาด</div><div class="hero-subtitle">ส่งถึงโรงงาน ทุกวัน 🚛</div><div class="hero-emoji">🦐</div></div>
   <div id="featuredArea"></div>
   <div class="section-title">📦 หมวดหมู่สินค้า</div>
   <div class="category-grid" id="categoryGrid"></div>
 </div>
-
 <div class="page" id="categoryPage">
   <button class="back-btn" onclick="goHome()">← กลับหน้าหลัก</button>
   <div class="cat-header" id="catHeader"></div>
   <div id="productList"></div>
 </div>
-
 <div class="page" id="cartPage">
   <button class="back-btn" onclick="goHome()">← กลับหน้าหลัก</button>
   <div class="cat-header">🛒 ตะกร้าของฉัน</div>
   <div id="cartList"></div>
   <div id="cartSummary"></div>
 </div>
-
 <div class="page" id="checkoutPage">
   <button class="back-btn" onclick="showCart()">← กลับตะกร้า</button>
   <div class="cat-header">💳 ชำระเงิน</div>
   <div class="input-group"><label class="input-label">ชื่อ - นามสกุล</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
   <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, QC"></div>
   <div class="input-group"><label class="input-label">เบอร์โทร</label><input class="input-field" type="tel" id="custPhone" placeholder="08X-XXX-XXXX"></div>
+
+  <!-- ★ โลเคชั่นจัดส่ง (บังคับ) ★ -->
+  <div class="loc-section">
+    <div class="input-label">📍 ที่อยู่จัดส่ง <span style="color:var(--primary)">(จำเป็น)</span></div>
+    <div class="input-group"><input class="input-field" type="text" id="custAddr" placeholder="เช่น บ้าน/หอพัก ชื่อซอย ตำบล"></div>
+    <div class="loc-card" id="locCard">
+      <div style="font-family:'Prompt';font-weight:600;font-size:15px;text-align:center">📍 แชร์พิกัด GPS ให้คนขับ</div>
+      <div class="loc-note">⚠️ กรุณากดแชร์พิกัดเพื่อให้เราขับไปส่งถึงบ้าน/หอพักได้ถูกที่</div>
+      <button class="loc-btn" id="locBtn" onclick="getLocation()">📍 กดแชร์พิกัดที่อยู่</button>
+      <div id="locResult"></div>
+    </div>
+  </div>
+
   <div class="payment-section">
     <div class="payment-title">💰 เลือกวิธีชำระเงิน</div>
     <div class="payment-options">
@@ -225,10 +246,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div class="qr-box" id="qrBox"></div>
     <div class="qr-amount" id="qrAmount">฿0</div>
     <div class="qr-note">สแกนผ่าน Mobile Banking / PromptPay</div>
+    <!-- ★ แนบสลิป (บังคับถ้าจ่ายเลย) ★ -->
+    <div class="slip-upload">
+      <div style="font-family:'Prompt';font-weight:700;font-size:15px;margin-top:16px">📸 แนบสลิปโอนเงิน <span style="color:var(--primary)">(จำเป็น)</span></div>
+      <div class="slip-area" id="slipArea" onclick="document.getElementById('slipInput').click()">
+        <span style="font-size:48px">🧾</span>
+        <span style="font-family:'Prompt';font-weight:600;font-size:14px;color:var(--text-light)">กดเพื่อแนบสลิป</span>
+        <span style="font-size:12px;color:var(--text-light)">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>
+      </div>
+      <input type="file" id="slipInput" accept="image/*" style="display:none" onchange="handleSlipUpload(this)">
+    </div>
   </div></div>
   <button class="btn-primary btn-success" onclick="confirmOrder()">✅ ยืนยันออเดอร์</button>
 </div>
-
 <div class="page" id="successPage">
   <div class="success-page">
     <div class="success-icon">✅</div>
@@ -238,10 +268,17 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-primary" onclick="resetAll()">🏠 กลับหน้าหลัก</button>
   </div>
 </div>
-
 <div class="page" id="adminPage">
   <button class="back-btn" onclick="goHome()">← กลับหน้าร้าน</button>
   <div class="admin-header"><h2>⚙️ จัดการร้านค้า</h2><p>เพิ่ม / ลบ / แก้ไข / อัพโหลดรูปสินค้า</p></div>
+
+  <!-- ★★★ EXPORT BUTTON ★★★ -->
+  <div class="export-box">
+    <h3>📤 อัพเดทเว็บให้ลูกค้าเห็น</h3>
+    <p>หลังเพิ่มรูป/แก้สินค้าเสร็จแล้ว<br>กดปุ่มนี้เพื่อสร้างไฟล์ใหม่<br>แล้วเอาไปอัพทับบน GitHub</p>
+    <button class="btn-export" onclick="exportHTML()">📤 สร้างไฟล์อัพเดท</button>
+  </div>
+
   <div class="admin-stat-grid" id="adminStats"></div>
   <div class="admin-section">
     <div class="admin-section-title">📋 ออเดอร์ล่าสุด <button class="btn-primary btn-sm" onclick="clearOrders()" style="background:#e74c3c;box-shadow:none;font-size:12px;padding:6px 12px">🗑️ ล้าง</button></div>
@@ -264,7 +301,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-primary" onclick="saveSettings()">💾 บันทึกตั้งค่า</button>
   </div>
 </div>
-
 <div class="bottom-bar" id="bottomBar">
   <div class="bottom-bar-content">
     <div class="bottom-bar-info"><div class="bottom-bar-items" id="bottomItems">0 รายการ</div><div class="bottom-bar-total" id="bottomTotal">฿0</div></div>
@@ -274,9 +310,21 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
 
+<!--
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+★  EMBEDDED DATA - ข้อมูลสินค้าฝังอยู่ตรงนี้          ★
+★  ถูกสร้างโดยปุ่ม Export ในหน้า Admin              ★
+★  ลูกค้าทุกคนจะเห็นข้อมูลนี้เหมือนกัน              ★
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+-->
+<script id="embeddedData" type="application/json">__EMBEDDED_DATA__</script>
+
 <script>
+// === GOOGLE SHEETS URL ===
+var SHEETS_URL='https://script.google.com/macros/s/AKfycbyY-4xcFk1tyNEZNtuCzsUSS0DxkjAwliup8uFjbcEVshXEKc5un2vIxKvn05iuvuwHjQ/exec';
+
 // === DEFAULT DATA ===
-const DEFAULT_CATS={
+var DEFAULT_CATS={
   shrimp:{name:'กุ้ง 13 ตัว/โล',emoji:'🦐',img:'',featured:true,featuredPrice:'350 – 380 บาท',items:[
     {id:'s1',name:'กุ้งสด',price:350,emoji:'🦐',img:'',unit:'กก.',bg:'#FFF0EB'},
     {id:'s2',name:'กุ้งเผา',price:350,emoji:'🔥',img:'',unit:'กก.',bg:'#FFF3E0'}]},
@@ -303,289 +351,242 @@ const DEFAULT_CATS={
     {id:'r2',name:'น้ำพริก',price:450,emoji:'🌶️',img:'',unit:'ถุง',bg:'#FFCCBC'},
     {id:'r3',name:'ชีสเค้ก',price:450,emoji:'🍰',img:'',unit:'ชิ้น',bg:'#FFF3E0'}]}
 };
-const DEFAULT_SET={qrImg:'',laterFee:20,adminPass:'1234'};
+var DEFAULT_SET={qrImg:'',laterFee:20,adminPass:'1234'};
 
-// === DB ===
-function ld(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v||d}catch(e){return d}}
-function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){
-  if(e.name==='QuotaExceededError'){showToast('⚠️ พื้นที่เต็ม! ลองลดขนาดรูป');return false}
-}return true}
+// === LOAD DATA: embedded first, then localStorage override for admin ===
+function loadEmbedded(){
+  try{var el=document.getElementById('embeddedData');var t=el.textContent.trim();
+    if(t&&t!=='__EMBEDDED_DATA__')return JSON.parse(t);
+  }catch(e){}return null;
+}
+function ld(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v||d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){if(e.name==='QuotaExceededError')showToast('⚠️ พื้นที่เต็ม!');return false}}
 
-let cats=ld('of_cats',null)||JSON.parse(JSON.stringify(DEFAULT_CATS));
-let settings=Object.assign({},DEFAULT_SET,ld('of_set',{}));
-let orders=ld('of_orders',[]);
-let cart={},payMethod='now';
-// temp upload holder for modals
-let tempUploadImg='';
-
+var embedded=loadEmbedded();
+var cats,settings;
+if(embedded){
+  // ★ มี embedded data = ใช้เป็นค่าพื้นฐาน (ลูกค้าเห็น)
+  // แต่ Admin ยังใช้ localStorage override ได้
+  var lsCats=ld('of_cats',null);
+  var lsSet=ld('of_set',null);
+  cats=lsCats||embedded.cats||JSON.parse(JSON.stringify(DEFAULT_CATS));
+  settings=Object.assign({},DEFAULT_SET,embedded.settings||{},lsSet||{});
+}else{
+  cats=ld('of_cats',null)||JSON.parse(JSON.stringify(DEFAULT_CATS));
+  settings=Object.assign({},DEFAULT_SET,ld('of_set',{}));
+}
+var orders=ld('of_orders',[]);
+var cart={},payMethod='now',tempUploadImg='';
+var custSlipImg='',custLat='',custLng='';
 function persist(){sv('of_cats',cats)}
 
-// === IMAGE COMPRESS & UPLOAD ===
+// === IMAGE COMPRESS ===
 function compressImage(file,maxW,quality){
-  return new Promise((resolve)=>{
-    const reader=new FileReader();
-    reader.onload=function(e){
-      const img=new Image();
-      img.onload=function(){
-        const canvas=document.createElement('canvas');
-        let w=img.width,h=img.height;
+  return new Promise(function(resolve){
+    var reader=new FileReader();reader.onload=function(e){
+      var img=new Image();img.onload=function(){
+        var canvas=document.createElement('canvas');var w=img.width,h=img.height;
         if(w>maxW){h=Math.round(h*(maxW/w));w=maxW}
         if(h>maxW){w=Math.round(w*(maxW/h));h=maxW}
-        canvas.width=w;canvas.height=h;
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(img,0,0,w,h);
+        canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
         resolve(canvas.toDataURL('image/jpeg',quality));
-      };
-      img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
+      };img.src=e.target.result;
+    };reader.readAsDataURL(file);
   });
 }
+function triggerUpload(inputId,mode){var inp=document.getElementById(inputId);if(mode==='camera')inp.setAttribute('capture','environment');else inp.removeAttribute('capture');inp.click()}
 
-function triggerUpload(inputId,mode){
-  const inp=document.getElementById(inputId);
-  if(mode==='camera') inp.setAttribute('capture','environment');
-  else inp.removeAttribute('capture');
-  inp.click();
-}
+// ★ SLIP UPLOAD ★
+async function handleSlipUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูปสลิป...');
+  custSlipImg=await compressImage(input.files[0],600,0.8);
+  var a=document.getElementById('slipArea');
+  a.innerHTML='<img src="'+custSlipImg+'"><button class="remove-img" onclick="event.stopPropagation();clearSlip()">✕</button>';
+  a.classList.add('has-img');showToast('แนบสลิปแล้ว ✅');input.value=''}
+function clearSlip(){custSlipImg='';var a=document.getElementById('slipArea');
+  a.innerHTML='<span style="font-size:48px">🧾</span><span style="font-family:Prompt;font-weight:600;font-size:14px;color:var(--text-light)">กดเพื่อแนบสลิป</span><span style="font-size:12px;color:var(--text-light)">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>';
+  a.classList.remove('has-img')}
 
-async function handleModalUpload(input){
-  if(!input.files||!input.files[0])return;
-  showToast('กำลังบีบรูป...');
-  const compressed=await compressImage(input.files[0],400,0.7);
-  tempUploadImg=compressed;
-  const area=document.getElementById('modalUploadArea');
-  area.innerHTML='<img src="'+compressed+'" alt="preview"><button class="remove-img" onclick="event.stopPropagation();clearModalUpload()">✕</button>';
-  area.classList.add('has-img');
-  showToast('อัพโหลดรูปแล้ว ✅');
-  input.value='';
+// ★ LOCATION GPS ★
+function getLocation(){
+  var btn=document.getElementById('locBtn');
+  btn.innerHTML='⏳ กำลังหาพิกัด...';btn.disabled=true;
+  if(!navigator.geolocation){showToast('เบราว์เซอร์ไม่รองรับ GPS');btn.innerHTML='📍 กดแชร์พิกัดที่อยู่';btn.disabled=false;return}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    custLat=pos.coords.latitude.toFixed(6);custLng=pos.coords.longitude.toFixed(6);
+    btn.innerHTML='✅ ได้รับพิกัดแล้ว';btn.classList.add('done');btn.disabled=false;
+    document.getElementById('locCard').classList.add('has-loc');
+    document.getElementById('locResult').innerHTML='<div class="loc-coords">📍 '+custLat+', '+custLng+'</div><div class="loc-info"><a href="https://www.google.com/maps?q='+custLat+','+custLng+'" target="_blank" style="color:#3498db">ดูบนแผนที่ →</a></div>';
+  },function(err){
+    showToast('ไม่สามารถหาพิกัดได้ กรุณาอนุญาต GPS');btn.innerHTML='📍 กดแชร์พิกัดที่อยู่';btn.disabled=false;
+  },{enableHighAccuracy:true,timeout:15000})
 }
-
-function clearModalUpload(){
-  tempUploadImg='';
-  const area=document.getElementById('modalUploadArea');
-  area.innerHTML='<span class="upload-icon">📷</span><span class="upload-text">อัพโหลดรูปสินค้า</span><span class="upload-hint">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>';
-  area.classList.remove('has-img');
-}
-
-async function handleQrUpload(input){
-  if(!input.files||!input.files[0])return;
-  showToast('กำลังบีบรูป...');
-  const compressed=await compressImage(input.files[0],300,0.8);
-  settings.qrImg=compressed;
-  sv('of_set',settings);
-  renderQrUploadArea();
-  showToast('อัพโหลด QR แล้ว ✅');
-  input.value='';
-}
-
-function renderQrUploadArea(){
-  const area=document.getElementById('qrUploadArea');
-  if(settings.qrImg){
-    area.innerHTML='<img src="'+settings.qrImg+'" alt="QR"><button class="remove-img" onclick="event.stopPropagation();settings.qrImg=\'\';sv(\'of_set\',settings);renderQrUploadArea()">✕</button>';
-    area.classList.add('has-img');
-  }else{
-    area.innerHTML='<span class="upload-icon">📱</span><span class="upload-text">อัพโหลด QR จ่ายเงิน</span>';
-    area.classList.remove('has-img');
-  }
-}
+async function handleModalUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
+  tempUploadImg=await compressImage(input.files[0],400,0.7);
+  var area=document.getElementById('modalUploadArea');
+  area.innerHTML='<img src="'+tempUploadImg+'"><button class="remove-img" onclick="event.stopPropagation();clearMU()">✕</button>';
+  area.classList.add('has-img');showToast('อัพโหลดรูปแล้ว ✅');input.value=''}
+function clearMU(){tempUploadImg='';var a=document.getElementById('modalUploadArea');
+  a.innerHTML='<span class="upload-icon">📷</span><span class="upload-text">อัพโหลดรูปสินค้า</span><span class="upload-hint">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>';a.classList.remove('has-img')}
+async function handleQrUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
+  settings.qrImg=await compressImage(input.files[0],300,0.8);sv('of_set',settings);renderQrArea();showToast('อัพโหลด QR แล้ว ✅');input.value=''}
+function renderQrArea(){var a=document.getElementById('qrUploadArea');
+  if(settings.qrImg){a.innerHTML='<img src="'+settings.qrImg+'"><button class="remove-img" onclick="event.stopPropagation();settings.qrImg=\'\';sv(\'of_set\',settings);renderQrArea()">✕</button>';a.classList.add('has-img')}
+  else{a.innerHTML='<span class="upload-icon">📱</span><span class="upload-text">อัพโหลด QR</span>';a.classList.remove('has-img')}}
 
 // === HELPERS ===
-function imgH(src,emoji){
-  if(!src)return emoji;
-  return '<img src="'+src+'" alt="" onerror="this.outerHTML=\''+emoji+'\'">';
-}
+function imgH(s,e){if(!s)return e;return '<img src="'+s+'" alt="" onerror="this.outerHTML=\''+e+'\'">'}
 function gid(){return 'p'+Date.now().toString(36)+Math.random().toString(36).substr(2,4)}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)}
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
 function goHome(){showPage('homePage');renderHome();updateBB()}
 function openModal(h){document.getElementById('modalContent').innerHTML=h;document.getElementById('modalOverlay').classList.add('show')}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show');tempUploadImg=''}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');document.getElementById('modalContent').innerHTML='';tempUploadImg=''}
 
-// === CUSTOMER PAGES ===
+// === CUSTOMER ===
 function renderHome(){
-  let fh='';const fc=Object.entries(cats).find(([k,c])=>c.featured);
-  if(fc){const[fid,c]=fc;fh='<div class="featured-card" onclick="goToCat(\''+fid+'\')"><div class="featured-img">'+imgH(c.featuredImg||c.img,c.emoji)+'<div class="featured-tag">⭐ แนะนำวันนี้</div></div><div class="featured-info"><div class="featured-name">'+c.name+'</div><div class="featured-price">'+(c.featuredPrice||'')+'</div></div></div>'}
+  var fh='';var fc=Object.entries(cats).find(function(e){return e[1].featured});
+  if(fc){var fid=fc[0],c=fc[1];fh='<div class="featured-card" onclick="goToCat(\''+fid+'\')"><div class="featured-img">'+imgH(c.featuredImg||c.img,c.emoji)+'<div class="featured-tag">⭐ แนะนำวันนี้</div></div><div class="featured-info"><div class="featured-name">'+c.name+'</div><div class="featured-price">'+(c.featuredPrice||'')+'</div></div></div>'}
   document.getElementById('featuredArea').innerHTML=fh;
-  let h='';for(const[id,c] of Object.entries(cats)){if(c.featured)continue;if(!(c.items||[]).length)continue;
+  var h='';for(var id in cats){var c=cats[id];if(c.featured)continue;if(!(c.items||[]).length)continue;
     h+='<div class="category-card" onclick="goToCat(\''+id+'\')"><div class="category-img">'+imgH(c.img,c.emoji)+'</div><div class="category-text"><div class="category-name">'+c.name+'</div><div class="category-count">'+c.items.length+' รายการ</div></div></div>'}
-  document.getElementById('categoryGrid').innerHTML=h;
-}
+  document.getElementById('categoryGrid').innerHTML=h}
 
-function goToCat(cid){
-  const c=cats[cid];if(!c)return;
-  document.getElementById('catHeader').innerHTML=c.emoji+' '+c.name;
-  let h='';(c.items||[]).forEach(it=>{const q=cart[it.id]||0;
+function goToCat(cid){var c=cats[cid];if(!c)return;
+  document.getElementById('catHeader').innerHTML=c.emoji+' '+c.name;var h='';
+  (c.items||[]).forEach(function(it){var q=cart[it.id]||0;
     h+='<div class="product-card"><div class="product-img" style="background:'+(it.bg||'#f5f0ea')+'">'+imgH(it.img,it.emoji)+'</div><div class="product-info"><div class="product-name">'+it.name+'</div><div class="product-price">฿'+it.price+' <span class="product-unit">/ '+(it.unit||'ชิ้น')+'</span></div></div><div class="qty-control"><button class="qty-btn minus" onclick="chgQty(\''+it.id+'\',-1)">−</button><div class="qty-value" id="qty-'+it.id+'">'+q+'</div><button class="qty-btn plus" onclick="chgQty(\''+it.id+'\',1)">+</button></div></div>'});
   if(!h)h='<div class="empty-state"><div class="empty-state-icon">📭</div>ยังไม่มีสินค้า</div>';
-  document.getElementById('productList').innerHTML=h;showPage('categoryPage');updateBB();
-}
+  document.getElementById('productList').innerHTML=h;showPage('categoryPage');updateBB()}
 
 function chgQty(id,d){if(!cart[id])cart[id]=0;cart[id]=Math.max(0,cart[id]+d);if(!cart[id])delete cart[id];
-  const el=document.getElementById('qty-'+id);if(el){el.textContent=cart[id]||0;el.style.transform='scale(1.3)';setTimeout(()=>el.style.transform='scale(1)',150)}
+  var el=document.getElementById('qty-'+id);if(el){el.textContent=cart[id]||0;el.style.transform='scale(1.3)';setTimeout(function(){el.style.transform='scale(1)'},150)}
   updateBadge();updateBB();if(d>0)showToast('เพิ่มลงตะกร้าแล้ว ✓')}
-function findP(id){for(const c of Object.values(cats)){const f=(c.items||[]).find(p=>p.id===id);if(f)return f}return null}
-function gTotal(){let t=0;for(const[id,q]of Object.entries(cart)){const p=findP(id);if(p)t+=p.price*q}return t}
-function gCount(){return Object.values(cart).reduce((a,b)=>a+b,0)}
-function updateBadge(){const c=gCount(),b=document.getElementById('cartBadge');b.textContent=c;b.classList.toggle('show',c>0)}
-function updateBB(){const c=gCount(),t=gTotal(),bar=document.getElementById('bottomBar');
-  const hide=['cartPage','checkoutPage','successPage','adminPage'].some(id=>document.getElementById(id).classList.contains('active'));
+function findP(id){for(var k in cats){var f=(cats[k].items||[]).find(function(p){return p.id===id});if(f)return f}return null}
+function gTotal(){var t=0;for(var id in cart){var p=findP(id);if(p)t+=p.price*cart[id]}return t}
+function gCount(){var c=0;for(var k in cart)c+=cart[k];return c}
+function updateBadge(){var c=gCount(),b=document.getElementById('cartBadge');b.textContent=c;b.classList.toggle('show',c>0)}
+function updateBB(){var c=gCount(),t=gTotal(),bar=document.getElementById('bottomBar');
+  var hide=['cartPage','checkoutPage','successPage','adminPage'].some(function(id){return document.getElementById(id).classList.contains('active')});
   if(c>0&&!hide){bar.classList.add('show');document.getElementById('bottomItems').textContent=c+' รายการ';document.getElementById('bottomTotal').textContent='฿'+t.toLocaleString()}else bar.classList.remove('show')}
 
 function showCart(){
-  const items=Object.entries(cart),L=document.getElementById('cartList'),S=document.getElementById('cartSummary');
+  var items=Object.entries(cart),L=document.getElementById('cartList'),S=document.getElementById('cartSummary');
   if(!items.length){L.innerHTML='<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div class="cart-empty-text">ตะกร้าว่างเปล่า</div><div style="font-size:14px;color:var(--text-light)">เลือกสินค้าจากหมวดหมู่ได้เลย</div><button class="btn-outline" onclick="goHome()" style="margin-top:20px">🏠 เลือกสินค้า</button></div>';S.innerHTML=''}
-  else{let h='',total=0;items.forEach(([id,qty])=>{const p=findP(id);if(!p)return;const sub=p.price*qty;total+=sub;
+  else{var h='',total=0;items.forEach(function(e){var id=e[0],qty=e[1],p=findP(id);if(!p)return;var sub=p.price*qty;total+=sub;
     h+='<div class="cart-item"><div class="cart-item-img" style="background:'+(p.bg||'#f5f0ea')+'">'+imgH(p.img,p.emoji)+'</div><div class="cart-item-info"><div class="cart-item-name">'+p.name+'</div><div class="cart-item-price">฿'+p.price+' × '+qty+' = ฿'+sub.toLocaleString()+'</div></div><div class="qty-control"><button class="qty-btn minus" onclick="chgC(\''+id+'\',-1)">−</button><div class="qty-value">'+qty+'</div><button class="qty-btn plus" onclick="chgC(\''+id+'\',1)">+</button></div><button class="remove-btn" onclick="rmCart(\''+id+'\')">✕</button></div>'});
     L.innerHTML=h;S.innerHTML='<div class="summary-card"><div class="summary-row"><span class="summary-label">จำนวนสินค้า</span><span>'+gCount()+' รายการ</span></div><div class="summary-row"><span class="summary-label">ยอดรวม</span><span>฿'+total.toLocaleString()+'</span></div><div class="summary-row total"><span>รวมทั้งหมด</span><span class="total-amount">฿'+total.toLocaleString()+'</span></div></div><button class="btn-primary" onclick="goCheckout()">💳 ไปชำระเงิน</button><button class="btn-outline" onclick="goHome()">← เลือกสินค้าเพิ่ม</button>'}
   showPage('cartPage');updateBB()}
 function chgC(id,d){if(!cart[id])cart[id]=0;cart[id]=Math.max(0,cart[id]+d);if(!cart[id])delete cart[id];updateBadge();showCart()}
 function rmCart(id){delete cart[id];updateBadge();showCart();showToast('ลบออกแล้ว')}
-
-function goCheckout(){payMethod='now';updCS();updPay();showPage('checkoutPage');updateBB()}
+function goCheckout(){payMethod='now';custSlipImg='';updCS();updPay();showPage('checkoutPage');updateBB();
+  // Reset slip area
+  var sa=document.getElementById('slipArea');if(sa){sa.innerHTML='<span style="font-size:48px">🧾</span><span style="font-family:Prompt;font-weight:600;font-size:14px;color:var(--text-light)">กดเพื่อแนบสลิป</span><span style="font-size:12px;color:var(--text-light)">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>';sa.classList.remove('has-img')}
+  // Reset location if not set
+  if(!custLat){var lc=document.getElementById('locCard');if(lc)lc.classList.remove('has-loc');var lb=document.getElementById('locBtn');if(lb){lb.innerHTML='📍 กดแชร์พิกัดที่อยู่';lb.classList.remove('done');lb.disabled=false}var lr=document.getElementById('locResult');if(lr)lr.innerHTML=''}
+}
 function selectPayment(m){payMethod=m;updPay();updCS()}
-function updPay(){document.querySelectorAll('.payment-option').forEach((el,i)=>el.classList.toggle('selected',(i===0&&payMethod==='now')||(i===1&&payMethod==='later')));
-  const qs=document.getElementById('qrSection');if(payMethod==='now'){qs.style.display='block';
-    const qb=document.getElementById('qrBox');
-    if(settings.qrImg)qb.innerHTML='<img src="'+settings.qrImg+'" alt="QR">';else qb.innerHTML='<div style="font-size:50px">📱</div><div style="font-size:12px;color:var(--text-light);text-align:center;padding:0 12px">อัพโหลด QR ในหน้า Admin</div>';
+function updPay(){document.querySelectorAll('.payment-option').forEach(function(el,i){el.classList.toggle('selected',(i===0&&payMethod==='now')||(i===1&&payMethod==='later'))});
+  var qs=document.getElementById('qrSection');if(payMethod==='now'){qs.style.display='block';var qb=document.getElementById('qrBox');
+    if(settings.qrImg)qb.innerHTML='<img src="'+settings.qrImg+'">';else qb.innerHTML='<div style="font-size:50px">📱</div><div style="font-size:12px;color:var(--text-light);text-align:center;padding:0 12px">อัพโหลด QR ในหน้า Admin</div>';
     document.getElementById('qrAmount').textContent='฿'+gTotal().toLocaleString()}else qs.style.display='none'}
-function updCS(){const t=gTotal(),fee=payMethod==='later'?settings.laterFee:0,f=t+fee;
+function updCS(){var t=gTotal(),fee=payMethod==='later'?settings.laterFee:0,f=t+fee;
   document.getElementById('checkoutSummary').innerHTML='<div class="summary-card"><div class="summary-row"><span class="summary-label">ยอดสินค้า</span><span>฿'+t.toLocaleString()+'</span></div>'+(fee?'<div class="summary-row"><span class="summary-label">ค่าธรรมเนียมจ่ายวันที่ 25</span><span style="color:var(--accent)">+฿'+fee+'</span></div>':'')+'<div class="summary-row total"><span>ยอดชำระ</span><span class="total-amount">฿'+f.toLocaleString()+'</span></div></div>'}
 
 function confirmOrder(){
-  const name=document.getElementById('custName').value.trim();if(!name){showToast('กรุณากรอกชื่อ');document.getElementById('custName').focus();return}
-  const dept=document.getElementById('custDept').value.trim(),phone=document.getElementById('custPhone').value.trim();
-  const fee=payMethod==='later'?settings.laterFee:0,total=gTotal()+fee;
-  const oid='OF-'+Date.now().toString(36).toUpperCase();
-  const oi=[];for(const[id,qty]of Object.entries(cart)){const p=findP(id);if(p)oi.push({name:p.name,price:p.price,qty,emoji:p.emoji})}
-  orders.unshift({id:oid,date:new Date().toLocaleString('th-TH'),name,dept,phone,items:oi,total,payment:payMethod==='now'?'จ่ายแล้ว':'รอจ่ายวันที่ 25',status:payMethod==='now'?'paid':'pending'});
+  var name=document.getElementById('custName').value.trim();if(!name){showToast('กรุณากรอกชื่อ');document.getElementById('custName').focus();return}
+  var dept=document.getElementById('custDept').value.trim(),phone=document.getElementById('custPhone').value.trim();
+  var addr=document.getElementById('custAddr').value.trim();
+  // ★ ตรวจสอบ Location
+  if(!custLat||!custLng){showToast('กรุณากดแชร์พิกัด GPS ก่อน 📍');document.getElementById('locBtn').scrollIntoView({behavior:'smooth',block:'center'});return}
+  // ★ ตรวจสอบ Slip (ถ้าจ่ายเลย)
+  if(payMethod==='now'&&!custSlipImg){showToast('กรุณาแนบสลิปโอนเงิน 🧾');document.getElementById('slipArea').scrollIntoView({behavior:'smooth',block:'center'});return}
+  var fee=payMethod==='later'?settings.laterFee:0,total=gTotal()+fee;
+  var oid='OF-'+Date.now().toString(36).toUpperCase();
+  var oi=[];for(var id in cart){var p=findP(id);if(p)oi.push({name:p.name,price:p.price,qty:cart[id],emoji:p.emoji})}
+  var locationUrl='https://www.google.com/maps?q='+custLat+','+custLng;
+  orders.unshift({id:oid,date:new Date().toLocaleString('th-TH'),name:name,dept:dept,phone:phone,addr:addr,lat:custLat,lng:custLng,items:oi,total:total,payment:payMethod==='now'?'จ่ายแล้ว':'รอจ่ายวันที่ 25',status:payMethod==='now'?'paid':'pending',hasSlip:!!custSlipImg});
   if(orders.length>100)orders=orders.slice(0,100);sv('of_orders',orders);
   document.getElementById('orderIdDisplay').textContent='หมายเลขออเดอร์: '+oid;
-  let msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';msg+='<br>ยอดรวม ฿'+total.toLocaleString();
-  msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':'<br>✅ จ่ายเรียบร้อยแล้ว';msg+='<br><br>รอรับของได้เลยนะครับ/ค่ะ 🚛';
+  var msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';
+  if(addr)msg+='<br>📍 '+addr;
+  msg+='<br>ยอดรวม ฿'+total.toLocaleString();
+  msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':'<br>✅ จ่ายเรียบร้อยแล้ว (แนบสลิปแล้ว)';msg+='<br><br>รอรับของได้เลยนะครับ/ค่ะ 🚛';
   document.getElementById('successMsg').innerHTML=msg;
 
-  // ★ ส่งออเดอร์ไป Google Sheets + แจ้งเตือน LINE อัตโนมัติ ★
-  try{fetch('https://script.google.com/macros/s/AKfycbyY-4xcFk1tyNEZNtuCzsUSS0DxkjAwliup8uFjbcEVshXEKc5un2vIxKvn05iuvuwHjQ/exec',{
-    method:'POST',mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      date:new Date().toLocaleString('th-TH'),
-      orderId:oid,name:name,dept:dept,
-      items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),
-      total:total,
-      payment:payMethod==='now'?'จ่ายแล้ว':'รอจ่ายวันที่ 25'
-    })
-  })}catch(e){}
+  // ★ ส่งไป Google Sheets + LINE (รวมพิกัด) ★
+  try{fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,
+      items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),total:total,
+      payment:payMethod==='now'?'จ่ายแล้ว':'รอจ่ายวันที่ 25',
+      addr:addr,location:locationUrl,hasSlip:payMethod==='now'?'แนบสลิปแล้ว':'จ่ายทีหลัง'})})}catch(e){}
 
   showPage('successPage');updateBB()}
-function resetAll(){cart={};payMethod='now';['custName','custDept','custPhone'].forEach(id=>document.getElementById(id).value='');updateBadge();goHome()}
+function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng='';['custName','custDept','custPhone','custAddr'].forEach(function(id){document.getElementById(id).value=''});updateBadge();goHome()}
 
 // === ADMIN ===
-function openAdminLogin(){
-  openModal('<h3>🔐 เข้าสู่ระบบ Admin</h3><div class="input-group"><label class="input-label">รหัสผ่าน</label><input class="input-field" type="password" id="adminPassInput" placeholder="ใส่รหัสผ่าน" onkeydown="if(event.key===\'Enter\')doLogin()"></div><button class="btn-primary" onclick="doLogin()">🔓 เข้าสู่ระบบ</button><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-light)">รหัสเริ่มต้น: 1234</div>');
-  setTimeout(()=>{const el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
-function doLogin(){const p=document.getElementById('adminPassInput').value;if(p===settings.adminPass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
-
-function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminOrders();renderAdminProducts();
-  renderQrUploadArea();document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
-
-function renderAdminStats(){let tp=0,tc=Object.keys(cats).length;for(const c of Object.values(cats))tp+=(c.items||[]).length;
-  document.getElementById('adminStats').innerHTML='<div class="admin-stat"><div class="admin-stat-num">'+tc+'</div><div class="admin-stat-label">หมวดหมู่</div></div><div class="admin-stat"><div class="admin-stat-num">'+tp+'</div><div class="admin-stat-label">สินค้า</div></div><div class="admin-stat"><div class="admin-stat-num">'+orders.length+'</div><div class="admin-stat-label">ออเดอร์</div></div><div class="admin-stat"><div class="admin-stat-num">฿'+(orders.reduce((a,o)=>a+o.total,0)).toLocaleString()+'</div><div class="admin-stat-label">ยอดขายรวม</div></div>'}
-
-function renderAdminOrders(){const el=document.getElementById('orderList');if(!orders.length){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">📋</div>ยังไม่มีออเดอร์</div>';return}
-  let h='';orders.slice(0,20).forEach(o=>{const is=o.items.map(i=>i.emoji+i.name+'×'+i.qty).join(', ');
-    h+='<div class="order-card"><div class="order-card-header"><span class="order-card-id">'+o.id+'</span><span class="order-card-date">'+o.date+'</span></div><div class="order-card-customer">'+o.name+(o.dept?' ('+o.dept+')':'')+'</div><div class="order-card-items">'+is+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span class="order-card-total">฿'+o.total.toLocaleString()+'</span><span class="order-status '+(o.status==='paid'?'status-paid':'status-pending')+'">'+o.payment+'</span></div></div>'});
-  el.innerHTML=h}
+function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ Admin</h3><div class="input-group"><label class="input-label">รหัสผ่าน</label><input class="input-field" type="password" id="adminPassInput" placeholder="ใส่รหัสผ่าน" onkeydown="if(event.key===\'Enter\')doLogin()"></div><button class="btn-primary" onclick="doLogin()">🔓 เข้าสู่ระบบ</button><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-light)">รหัสเริ่มต้น: 1234</div>');
+  setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
+function doLogin(){if(document.getElementById('adminPassInput').value===settings.adminPass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
+function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminOrders();renderAdminProducts();renderQrArea();
+  document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
+function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
+  document.getElementById('adminStats').innerHTML='<div class="admin-stat"><div class="admin-stat-num">'+tc+'</div><div class="admin-stat-label">หมวดหมู่</div></div><div class="admin-stat"><div class="admin-stat-num">'+tp+'</div><div class="admin-stat-label">สินค้า</div></div><div class="admin-stat"><div class="admin-stat-num">'+orders.length+'</div><div class="admin-stat-label">ออเดอร์</div></div><div class="admin-stat"><div class="admin-stat-num">฿'+(orders.reduce(function(a,o){return a+o.total},0)).toLocaleString()+'</div><div class="admin-stat-label">ยอดขายรวม</div></div>'}
+function renderAdminOrders(){var el=document.getElementById('orderList');if(!orders.length){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">📋</div>ยังไม่มีออเดอร์</div>';return}
+  var h='';orders.slice(0,20).forEach(function(o){var is=o.items.map(function(i){return i.emoji+i.name+'×'+i.qty}).join(', ');
+    var locLink=o.lat?'<a href="https://www.google.com/maps?q='+o.lat+','+o.lng+'" target="_blank" style="color:#3498db;font-size:12px;text-decoration:none">📍 ดูแผนที่</a>':'';
+    h+='<div class="order-card"><div class="order-card-header"><span class="order-card-id">'+o.id+'</span><span class="order-card-date">'+o.date+'</span></div><div class="order-card-customer">'+o.name+(o.dept?' ('+o.dept+')':'')+'</div>'+(o.addr?'<div style="font-size:13px;color:var(--text-mid)">📍 '+o.addr+' '+locLink+'</div>':'')+'<div class="order-card-items">'+is+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span class="order-card-total">฿'+o.total.toLocaleString()+'</span><span class="order-status '+(o.status==='paid'?'status-paid':'status-pending')+'">'+o.payment+(o.hasSlip?' 🧾':'')+'</span></div></div>'});el.innerHTML=h}
 function clearOrders(){if(confirm('ล้างออเดอร์ทั้งหมด?')){orders=[];sv('of_orders',orders);renderAdminStats();renderAdminOrders();showToast('ล้างแล้ว')}}
-
-function renderAdminProducts(){
-  let h='';for(const[cid,c]of Object.entries(cats)){
-    h+='<div class="admin-cat-header"><div class="admin-cat-name">'+c.emoji+' '+c.name+' <span style="font-weight:400;font-size:13px;color:var(--text-light)">'+(c.items||[]).length+'</span></div><div class="admin-cat-actions"><button class="btn-primary btn-sm btn-success" onclick="openAddItemModal(\''+cid+'\')" style="font-size:12px;padding:6px 12px">+ สินค้า</button><button class="btn-edit" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="openEditCatModal(\''+cid+'\')">✏️</button><button class="btn-del" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="delCat(\''+cid+'\')">🗑️</button></div></div>';
-    (c.items||[]).forEach(it=>{
-      const hasImg=it.img?'📷':'';
-      h+='<div class="admin-item"><div class="admin-item-img" style="background:'+(it.bg||'#f5f0ea')+'">'+imgH(it.img,it.emoji)+'</div><div class="admin-item-info"><div class="admin-item-name">'+it.name+'</div><div class="admin-item-detail">฿'+it.price+' / '+(it.unit||'ชิ้น')+' '+hasImg+'</div></div><div class="admin-item-actions"><button class="btn-edit" onclick="openEditItemModal(\''+cid+'\',\''+it.id+'\')">✏️</button><button class="btn-del" onclick="delItem(\''+cid+'\',\''+it.id+'\')">🗑️</button></div></div>'})}
+function renderAdminProducts(){var h='';for(var cid in cats){var c=cats[cid];
+    h+='<div class="admin-cat-header"><div class="admin-cat-name">'+c.emoji+' '+c.name+' <span style="font-weight:400;font-size:13px;color:var(--text-light)">'+(c.items||[]).length+'</span></div><div style="display:flex;gap:6px"><button class="btn-primary btn-sm btn-success" onclick="openAddItemModal(\''+cid+'\')" style="font-size:12px;padding:6px 12px">+ สินค้า</button><button class="btn-edit" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="openEditCatModal(\''+cid+'\')">✏️</button><button class="btn-del" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="delCat(\''+cid+'\')">🗑️</button></div></div>';
+    (c.items||[]).forEach(function(it){h+='<div class="admin-item"><div class="admin-item-img" style="background:'+(it.bg||'#f5f0ea')+'">'+imgH(it.img,it.emoji)+'</div><div class="admin-item-info"><div class="admin-item-name">'+it.name+'</div><div class="admin-item-detail">฿'+it.price+' / '+(it.unit||'ชิ้น')+(it.img?' 📷':'')+'</div></div><div class="admin-item-actions"><button class="btn-edit" onclick="openEditItemModal(\''+cid+'\',\''+it.id+'\')">✏️</button><button class="btn-del" onclick="delItem(\''+cid+'\',\''+it.id+'\')">🗑️</button></div></div>'})}
   document.getElementById('adminProductList').innerHTML=h}
 
-function uploadModalHTML(existingImg){
-  const hasImg=existingImg?true:false;
-  return '<div class="input-group"><label class="input-label">📷 รูปสินค้า</label>'+
-    '<div class="upload-area '+(hasImg?'has-img':'')+'" id="modalUploadArea" onclick="document.getElementById(\'modalFileInput\').click()">'+
-    (hasImg?'<img src="'+existingImg+'" alt=""><button class="remove-img" onclick="event.stopPropagation();clearModalUpload()">✕</button>':
-    '<span class="upload-icon">📷</span><span class="upload-text">อัพโหลดรูปสินค้า</span><span class="upload-hint">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>')+
-    '</div>'+
-    '<div class="upload-btns">'+
-    '<button type="button" onclick="triggerUpload(\'modalFileInput\',\'camera\')">📸 ถ่ายรูป</button>'+
-    '<button type="button" onclick="triggerUpload(\'modalFileInput\',\'gallery\')">🖼️ แกลเลอรี่</button>'+
-    '</div>'+
-    '<input type="file" id="modalFileInput" accept="image/*" style="display:none" onchange="handleModalUpload(this)">'+
-    '</div>';
+function uploadHTML(ei){return '<div class="input-group"><label class="input-label">📷 รูปสินค้า</label><div class="upload-area '+(ei?'has-img':'')+'" id="modalUploadArea" onclick="document.getElementById(\'modalFileInput\').click()">'+(ei?'<img src="'+ei+'"><button class="remove-img" onclick="event.stopPropagation();clearMU()">✕</button>':'<span class="upload-icon">📷</span><span class="upload-text">อัพโหลดรูปสินค้า</span><span class="upload-hint">ถ่ายรูปหรือเลือกจากแกลเลอรี่</span>')+'</div><div class="upload-btns"><button type="button" onclick="triggerUpload(\'modalFileInput\',\'camera\')">📸 ถ่ายรูป</button><button type="button" onclick="triggerUpload(\'modalFileInput\',\'gallery\')">🖼️ แกลเลอรี่</button></div><input type="file" id="modalFileInput" accept="image/*" style="display:none" onchange="handleModalUpload(this)"></div>'}
+
+function openAddCatModal(){tempUploadImg='';openModal('<h3>➕ เพิ่มหมวดหมู่ใหม่</h3><div class="input-group"><label class="input-label">ชื่อหมวดหมู่</label><input class="input-field" id="m_cn" placeholder="เช่น เครื่องดื่ม"></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" placeholder="🥤" maxlength="4"></div>'+uploadHTML('')+'<button class="btn-primary btn-success" onclick="doAddCat()">✅ เพิ่มหมวดหมู่</button>')}
+function doAddCat(){var name=document.getElementById('m_cn').value.trim();if(!name){showToast('กรุณาใส่ชื่อ');return}var id='cat_'+Date.now().toString(36);cats[id]={name:name,emoji:document.getElementById('m_ce').value.trim()||'📦',img:tempUploadImg,items:[]};persist();closeModal();renderAdminProducts();renderAdminStats();showToast('เพิ่มแล้ว ✅')}
+var _editCatId='',_editItemCatId='',_editItemId='',_addItemCatId='';
+function openEditCatModal(cid){var c=cats[cid];if(!c)return;_editCatId=cid;tempUploadImg=c.img||'';openModal('<h3>✏️ แก้ไขหมวดหมู่</h3><div class="input-group"><label class="input-label">ชื่อ</label><input class="input-field" id="m_cn" value="'+c.name+'"></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" value="'+c.emoji+'" maxlength="4"></div>'+uploadHTML(c.img||'')+'<div class="input-group"><label class="input-label">ราคาแสดงหน้าแรก</label><input class="input-field" id="m_cfp" value="'+(c.featuredPrice||'')+'"></div><label style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer"><input type="checkbox" id="m_cf" '+(c.featured?'checked':'')+' style="width:20px;height:20px"> แสดงเป็นสินค้าแนะนำ</label><button class="btn-primary" onclick="doEditCat()">💾 บันทึก</button>')}
+function doEditCat(){var cid=_editCatId;var c=cats[cid];if(!c)return;c.name=document.getElementById('m_cn').value.trim()||c.name;c.emoji=document.getElementById('m_ce').value.trim()||c.emoji;c.img=tempUploadImg;c.featuredPrice=document.getElementById('m_cfp').value.trim();var f=document.getElementById('m_cf').checked;for(var k in cats)cats[k].featured=false;if(f)c.featured=true;persist();closeModal();renderAdminProducts();showToast('บันทึกแล้ว ✅')}
+function delCat(cid){if(!confirm('ลบ "'+cats[cid].name+'" ?'))return;delete cats[cid];persist();renderAdminProducts();renderAdminStats();showToast('ลบแล้ว')}
+function openAddItemModal(cid){var c=cats[cid];_addItemCatId=cid;tempUploadImg='';openModal('<h3>➕ เพิ่มสินค้าใน '+c.emoji+' '+c.name+'</h3><div class="input-group"><label class="input-label">ชื่อสินค้า</label><input class="input-field" id="m_in" placeholder="เช่น ปลาทู"></div><div class="input-group"><label class="input-label">ราคา (บาท)</label><input class="input-field" type="number" id="m_ip" placeholder="50"></div><div class="input-group"><label class="input-label">หน่วย</label><input class="input-field" id="m_iu" placeholder="กก." value="กก."></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ie" placeholder="🐟" maxlength="4"></div>'+uploadHTML('')+'<button class="btn-primary btn-success" onclick="doAddItem()">✅ เพิ่มสินค้า</button>')}
+function doAddItem(){var cid=_addItemCatId;var name=document.getElementById('m_in').value.trim(),price=parseInt(document.getElementById('m_ip').value)||0;if(!name||!price){showToast('กรุณาใส่ชื่อและราคา');return}
+  if(!cats[cid].items)cats[cid].items=[];cats[cid].items.push({id:gid(),name:name,price:price,unit:document.getElementById('m_iu').value.trim()||'กก.',emoji:document.getElementById('m_ie').value.trim()||'📦',img:tempUploadImg,bg:'#f5f0ea'});
+  if(!persist()){showToast('⚠️ พื้นที่เต็ม!');return}closeModal();renderAdminProducts();renderAdminStats();showToast('เพิ่ม "'+name+'" แล้ว ✅')}
+function openEditItemModal(cid,iid){var c=cats[cid];if(!c)return;var it=(c.items||[]).find(function(i){return i.id===iid});if(!it)return;_editItemCatId=cid;_editItemId=iid;tempUploadImg=it.img||'';
+  openModal('<h3>✏️ แก้ไข '+it.emoji+' '+it.name+'</h3><div class="input-group"><label class="input-label">ชื่อสินค้า</label><input class="input-field" id="m_in" value="'+it.name+'"></div><div class="input-group"><label class="input-label">ราคา (บาท)</label><input class="input-field" type="number" id="m_ip" value="'+it.price+'"></div><div class="input-group"><label class="input-label">หน่วย</label><input class="input-field" id="m_iu" value="'+(it.unit||'กก.')+'"></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ie" value="'+it.emoji+'" maxlength="4"></div>'+uploadHTML(it.img||'')+'<button class="btn-primary" onclick="doEditItem()">💾 บันทึก</button>')}
+function doEditItem(){var cid=_editItemCatId,iid=_editItemId;var it=(cats[cid].items||[]).find(function(i){return i.id===iid});if(!it)return;
+  it.name=document.getElementById('m_in').value.trim()||it.name;it.price=parseInt(document.getElementById('m_ip').value)||it.price;it.unit=document.getElementById('m_iu').value.trim()||it.unit;it.emoji=document.getElementById('m_ie').value.trim()||it.emoji;it.img=tempUploadImg;
+  if(!persist()){showToast('⚠️ พื้นที่เต็ม!');return}closeModal();renderAdminProducts();showToast('บันทึกแล้ว ✅')}
+function delItem(cid,iid){var it=(cats[cid].items||[]).find(function(i){return i.id===iid});if(!it||!confirm('ลบ "'+it.name+'" ?'))return;cats[cid].items=cats[cid].items.filter(function(i){return i.id!==iid});persist();renderAdminProducts();renderAdminStats();showToast('ลบแล้ว')}
+function saveSettings(){settings.laterFee=parseInt(document.getElementById('adminFee').value)||20;var np=document.getElementById('adminNewPass').value.trim();if(np)settings.adminPass=np;sv('of_set',settings);showToast('บันทึกตั้งค่าแล้ว ✅')}
+
+// =================================================================
+// ★★★ EXPORT FUNCTION - สร้างไฟล์ index.html ใหม่ที่ฝังข้อมูลทั้งหมด ★★★
+// =================================================================
+function exportHTML(){
+  showToast('กำลังสร้างไฟล์...');
+  // Get current page HTML
+  var html=document.documentElement.outerHTML;
+  // Create embedded data
+  var data=JSON.stringify({cats:cats,settings:{qrImg:settings.qrImg,laterFee:settings.laterFee,adminPass:settings.adminPass}});
+  // Replace the placeholder with actual data
+  html=html.replace('__EMBEDDED_DATA__',data.replace(/</g,'\\u003c').replace(/>/g,'\\u003e'));
+  // Also replace any old embedded data (for re-export)
+  var scriptTag=document.getElementById('embeddedData');
+  if(scriptTag){
+    var oldContent=scriptTag.textContent.trim();
+    if(oldContent&&oldContent!=='__EMBEDDED_DATA__'){
+      html=html.replace(oldContent,data.replace(/</g,'\\u003c').replace(/>/g,'\\u003e'));
+    }
+  }
+  // Download
+  var blob=new Blob(['<!DOCTYPE html>\n<html lang="th">\n'+html.substring(html.indexOf('<head'))],{type:'text/html'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  showToast('ดาวน์โหลดไฟล์แล้ว! อัพขึ้น GitHub ได้เลย ✅');
 }
-
-// === ADD CAT ===
-function openAddCatModal(){tempUploadImg='';
-  openModal('<h3>➕ เพิ่มหมวดหมู่ใหม่</h3>'+
-    '<div class="input-group"><label class="input-label">ชื่อหมวดหมู่</label><input class="input-field" id="m_cn" placeholder="เช่น เครื่องดื่ม"></div>'+
-    '<div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" placeholder="🥤" maxlength="4"></div>'+
-    uploadModalHTML('')+
-    '<button class="btn-primary btn-success" onclick="doAddCat()">✅ เพิ่มหมวดหมู่</button>')}
-function doAddCat(){const name=document.getElementById('m_cn').value.trim();if(!name){showToast('กรุณาใส่ชื่อ');return}
-  const id='cat_'+Date.now().toString(36);cats[id]={name,emoji:document.getElementById('m_ce').value.trim()||'📦',img:tempUploadImg,items:[]};
-  persist();closeModal();renderAdminProducts();renderAdminStats();showToast('เพิ่มแล้ว ✅')}
-
-// === EDIT CAT ===
-function openEditCatModal(cid){const c=cats[cid];if(!c)return;tempUploadImg=c.img||'';
-  openModal('<h3>✏️ แก้ไขหมวดหมู่</h3>'+
-    '<div class="input-group"><label class="input-label">ชื่อ</label><input class="input-field" id="m_cn" value="'+c.name+'"></div>'+
-    '<div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" value="'+c.emoji+'" maxlength="4"></div>'+
-    uploadModalHTML(c.img||'')+
-    '<div class="input-group"><label class="input-label">ราคาแสดงหน้าแรก</label><input class="input-field" id="m_cfp" value="'+(c.featuredPrice||'')+'"></div>'+
-    '<label style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer"><input type="checkbox" id="m_cf" '+(c.featured?'checked':'')+' style="width:20px;height:20px"> แสดงเป็นสินค้าแนะนำ</label>'+
-    '<button class="btn-primary" onclick="doEditCat(\''+cid+'\')">💾 บันทึก</button>')}
-function doEditCat(cid){const c=cats[cid];c.name=document.getElementById('m_cn').value.trim()||c.name;c.emoji=document.getElementById('m_ce').value.trim()||c.emoji;c.img=tempUploadImg;c.featuredPrice=document.getElementById('m_cfp').value.trim();
-  const isFeat=document.getElementById('m_cf').checked;for(const x of Object.values(cats))x.featured=false;if(isFeat)c.featured=true;
-  persist();closeModal();renderAdminProducts();showToast('บันทึกแล้ว ✅')}
-
-function delCat(cid){const c=cats[cid];if(!c)return;if(!confirm('ลบ "'+c.name+'" ?'))return;delete cats[cid];persist();renderAdminProducts();renderAdminStats();showToast('ลบแล้ว')}
-
-// === ADD ITEM ===
-function openAddItemModal(cid){const c=cats[cid];tempUploadImg='';
-  openModal('<h3>➕ เพิ่มสินค้าใน '+c.emoji+' '+c.name+'</h3>'+
-    '<div class="input-group"><label class="input-label">ชื่อสินค้า</label><input class="input-field" id="m_in" placeholder="เช่น ปลาทู"></div>'+
-    '<div class="input-group"><label class="input-label">ราคา (บาท)</label><input class="input-field" type="number" id="m_ip" placeholder="50"></div>'+
-    '<div class="input-group"><label class="input-label">หน่วย</label><input class="input-field" id="m_iu" placeholder="กก." value="กก."></div>'+
-    '<div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ie" placeholder="🐟" maxlength="4"></div>'+
-    uploadModalHTML('')+
-    '<button class="btn-primary btn-success" onclick="doAddItem(\''+cid+'\')">✅ เพิ่มสินค้า</button>')}
-function doAddItem(cid){const name=document.getElementById('m_in').value.trim(),price=parseInt(document.getElementById('m_ip').value)||0;
-  if(!name||!price){showToast('กรุณาใส่ชื่อและราคา');return}
-  if(!cats[cid].items)cats[cid].items=[];
-  cats[cid].items.push({id:gid(),name,price,unit:document.getElementById('m_iu').value.trim()||'กก.',emoji:document.getElementById('m_ie').value.trim()||'📦',img:tempUploadImg,bg:'#f5f0ea'});
-  if(!persist()){showToast('⚠️ พื้นที่เต็ม! ลองใช้รูปเล็กลง');return}
-  closeModal();renderAdminProducts();renderAdminStats();showToast('เพิ่ม "'+name+'" แล้ว ✅')}
-
-// === EDIT ITEM ===
-function openEditItemModal(cid,iid){const c=cats[cid];if(!c)return;const it=(c.items||[]).find(i=>i.id===iid);if(!it)return;
-  tempUploadImg=it.img||'';
-  openModal('<h3>✏️ แก้ไข '+it.emoji+' '+it.name+'</h3>'+
-    '<div class="input-group"><label class="input-label">ชื่อสินค้า</label><input class="input-field" id="m_in" value="'+it.name+'"></div>'+
-    '<div class="input-group"><label class="input-label">ราคา (บาท)</label><input class="input-field" type="number" id="m_ip" value="'+it.price+'"></div>'+
-    '<div class="input-group"><label class="input-label">หน่วย</label><input class="input-field" id="m_iu" value="'+(it.unit||'กก.')+'"></div>'+
-    '<div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ie" value="'+it.emoji+'" maxlength="4"></div>'+
-    uploadModalHTML(it.img||'')+
-    '<button class="btn-primary" onclick="doEditItem(\''+cid+'\',\''+iid+'\')">💾 บันทึก</button>')}
-function doEditItem(cid,iid){const it=(cats[cid].items||[]).find(i=>i.id===iid);if(!it)return;
-  it.name=document.getElementById('m_in').value.trim()||it.name;it.price=parseInt(document.getElementById('m_ip').value)||it.price;
-  it.unit=document.getElementById('m_iu').value.trim()||it.unit;it.emoji=document.getElementById('m_ie').value.trim()||it.emoji;it.img=tempUploadImg;
-  if(!persist()){showToast('⚠️ พื้นที่เต็ม!');return}
-  closeModal();renderAdminProducts();showToast('บันทึกแล้ว ✅')}
-
-function delItem(cid,iid){const c=cats[cid];if(!c)return;const it=(c.items||[]).find(i=>i.id===iid);if(!it)return;
-  if(!confirm('ลบ "'+it.name+'" ?'))return;c.items=c.items.filter(i=>i.id!==iid);persist();renderAdminProducts();renderAdminStats();showToast('ลบแล้ว')}
-
-function saveSettings(){settings.laterFee=parseInt(document.getElementById('adminFee').value)||20;
-  const np=document.getElementById('adminNewPass').value.trim();if(np)settings.adminPass=np;
-  sv('of_set',settings);showToast('บันทึกตั้งค่าแล้ว ✅')}
 
 // INIT
 renderHome();
