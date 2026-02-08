@@ -150,6 +150,15 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .sync-ok{background:#E8F8F0;color:var(--green-dark)}
 .sync-loading{background:#FFF3E0;color:#E67E22}
 .sync-error{background:#FFEBEE;color:var(--primary)}
+.announce-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
+.announce-box{background:var(--card);border-radius:var(--radius);padding:0;width:100%;max-width:380px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:scaleIn .4s ease}
+.announce-header{background:linear-gradient(135deg,var(--primary),var(--accent));padding:20px 24px;color:#fff}
+.announce-header h2{font-family:'Prompt',sans-serif;font-weight:800;font-size:20px;margin:0}
+.announce-body{padding:20px 24px}
+.announce-body p{font-size:15px;line-height:1.7;color:var(--text);white-space:pre-line}
+.announce-body img{width:100%;border-radius:12px;margin-top:12px}
+.announce-close{width:100%;padding:16px;background:var(--bg);border:none;border-top:1px solid var(--border);font-family:'Prompt',sans-serif;font-weight:700;font-size:16px;color:var(--primary);cursor:pointer}
+.announce-close:active{background:var(--border)}
 .upload-area{width:100%;aspect-ratio:1;max-width:180px;margin:8px auto 12px;border:3px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;background:var(--card);transition:all .25s}
 .upload-area:active{transform:scale(.97)}
 .upload-area.has-img{border-style:solid;border-color:var(--green)}
@@ -255,6 +264,22 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="adminProductList"></div>
   </div>
   <div class="admin-section">
+    <div class="admin-section-title">📢 ประกาศหน้าแรก</div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow)">
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer"><input type="checkbox" id="annEnabled" style="width:20px;height:20px"> <span style="font-family:'Prompt';font-weight:600">เปิดแสดงประกาศ</span></label>
+      <div class="input-group"><label class="input-label">หัวข้อประกาศ</label><input class="input-field" type="text" id="annTitle" placeholder="เช่น 📢 ประกาศ"></div>
+      <div class="input-group"><label class="input-label">ข้อความ</label><textarea class="input-field" id="annMsg" rows="3" placeholder="เช่น สั่งของได้ถึงวันศุกร์ จัดส่งวันเสาร์" style="resize:vertical"></textarea></div>
+      <div class="input-group"><label class="input-label">📷 รูปประกาศ (โปรโมชั่น)</label>
+        <div class="upload-area" id="annImgArea" onclick="document.getElementById('annImgInput').click()" style="max-width:200px;aspect-ratio:16/9">
+          <span style="font-size:40px">🖼️</span><span style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--text-light)">อัพโหลดรูป</span>
+        </div>
+        <div class="upload-btns"><button type="button" onclick="var i=document.getElementById('annImgInput');i.setAttribute('capture','environment');i.click()">📸 ถ่ายรูป</button><button type="button" onclick="var i=document.getElementById('annImgInput');i.removeAttribute('capture');i.click()">🖼️ แกลเลอรี่</button></div>
+        <input type="file" id="annImgInput" accept="image/*" style="display:none" onchange="handleAnnImg(this)">
+      </div>
+      <button class="btn-primary" onclick="saveAnnouncement()">💾 บันทึกประกาศ</button>
+    </div>
+  </div>
+  <div class="admin-section">
     <div class="admin-section-title">🔧 ตั้งค่า</div>
     <div class="input-group"><label class="input-label">📱 QR PromptPay สำหรับรับเงิน</label>
       <div class="upload-area" id="qrUploadArea" onclick="document.getElementById('qrUploadInput').click()" style="max-width:180px">
@@ -271,6 +296,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="bottom-bar" id="bottomBar"><div class="bottom-bar-content"><div class="bottom-bar-info"><div class="bottom-bar-items" id="bottomItems">0 รายการ</div><div class="bottom-bar-total" id="bottomTotal">฿0</div></div><button class="bottom-bar-btn" onclick="showCart()">🛒 ดูตะกร้า</button></div></div>
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
+<div id="announcePopup"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -279,6 +305,7 @@ var API='https://script.google.com/macros/s/AKfycbxTmmh6PMyR8sFcSukh9QM-A_9-0_te
 
 var cats={},settings={laterFee:20,adminPass:'1234',qrImg:''},cart={},payMethod='now';
 var custSlipImg='',custLat='',custLng='';
+var announcement={enabled:false,title:'',message:'',img:''},annImg='';
 var _eCatId='',_eItemCatId='',_eItemId='',_aItemCatId='';
 var tempUploadImg='';
 
@@ -337,6 +364,9 @@ async function loadData(){
   if(s&&s.settings)settings=Object.assign(settings,s.settings);
   document.getElementById('homeLoading').style.display='none';
   renderHome();
+  // ★ โหลดประกาศ
+  await loadAnnouncement();
+  if(!sessionStorage.getItem('ann_seen'))showAnnouncement();
 }
 
 // ★ SAVE TO SHEETS (Admin) ★
@@ -432,7 +462,8 @@ function confirmOrder(){
   document.getElementById('successMsg').innerHTML=msg;
   apiPost({action:'newOrder',date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,
     items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),total:total,
-    payment:payMethod==='now'?'จ่ายแล้ว (มีสลิป)':'รอจ่ายวันที่ 25',addr:addr,location:locUrl});
+    payment:payMethod==='now'?'จ่ายแล้ว (มีสลิป)':'รอจ่ายวันที่ 25',addr:addr,location:locUrl,
+    slipImg:payMethod==='now'?custSlipImg:''});
   showPage('successPage');updateBB()}
 function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng='';['custName','custDept','custPhone','custAddr'].forEach(function(id){document.getElementById(id).value=''});updateBadge();goHome()}
 
@@ -441,7 +472,7 @@ function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ 
   setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
 function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
   if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
-function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();
+function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();renderAnnAdmin();
   document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
 function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
   document.getElementById('adminStats').innerHTML='<div class="admin-stat"><div class="admin-stat-num">'+tc+'</div><div class="admin-stat-label">หมวดหมู่</div></div><div class="admin-stat"><div class="admin-stat-num">'+tp+'</div><div class="admin-stat-label">สินค้า</div></div>'}
@@ -484,6 +515,41 @@ function saveSettings(){
   settings.laterFee=parseInt(document.getElementById('adminFee').value)||20;
   var np=document.getElementById('adminNewPass').value.trim();if(np)settings.adminPass=np;
   apiPost({action:'saveSettings',settings:settings});showToast('บันทึกตั้งค่าแล้ว ✅')}
+
+// ★ ANNOUNCEMENT ★
+async function loadAnnouncement(){
+  var a=await apiGet('getAnnouncement');
+  if(a&&a.announcement)announcement=a.announcement}
+function showAnnouncement(){
+  if(!announcement.enabled)return;
+  var h='<div class="announce-overlay" onclick="if(event.target===this)closeAnnounce()"><div class="announce-box">';
+  h+='<div class="announce-header"><h2>'+(announcement.title||'📢 ประกาศ')+'</h2></div>';
+  h+='<div class="announce-body"><p>'+(announcement.message||'')+'</p>';
+  if(announcement.img)h+='<img src="'+announcement.img+'">';
+  h+='</div><button class="announce-close" onclick="closeAnnounce()">✅ รับทราบ</button></div></div>';
+  document.getElementById('announcePopup').innerHTML=h}
+function closeAnnounce(){document.getElementById('announcePopup').innerHTML='';sessionStorage.setItem('ann_seen','1')}
+async function handleAnnImg(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
+  annImg=await compressImage(input.files[0],500,0.75);
+  var a=document.getElementById('annImgArea');
+  a.innerHTML='<img src="'+annImg+'"><button class="remove-img" onclick="event.stopPropagation();clearAnnImg()">✕</button>';
+  a.classList.add('has-img');showToast('อัพโหลดรูปแล้ว ✅');input.value=''}
+function clearAnnImg(){annImg='';var a=document.getElementById('annImgArea');
+  a.innerHTML='<span style="font-size:40px">🖼️</span><span style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--text-light)">อัพโหลดรูป</span>';a.classList.remove('has-img')}
+function renderAnnAdmin(){
+  document.getElementById('annEnabled').checked=announcement.enabled;
+  document.getElementById('annTitle').value=announcement.title||'';
+  document.getElementById('annMsg').value=announcement.message||'';
+  annImg=announcement.img||'';
+  var a=document.getElementById('annImgArea');
+  if(annImg){a.innerHTML='<img src="'+annImg+'"><button class="remove-img" onclick="event.stopPropagation();clearAnnImg()">✕</button>';a.classList.add('has-img')}
+  else{a.innerHTML='<span style="font-size:40px">🖼️</span><span style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--text-light)">อัพโหลดรูป</span>';a.classList.remove('has-img')}}
+function saveAnnouncement(){
+  announcement.enabled=document.getElementById('annEnabled').checked;
+  announcement.title=document.getElementById('annTitle').value.trim();
+  announcement.message=document.getElementById('annMsg').value.trim();
+  announcement.img=annImg;
+  apiPost({action:'saveAnnouncement',announcement:announcement});showToast('บันทึกประกาศแล้ว ✅')}
 
 // INIT
 loadData();
