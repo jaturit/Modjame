@@ -463,7 +463,22 @@ function confirmOrder(){
   document.getElementById('orderIdDisplay').textContent='หมายเลขออเดอร์: '+oid;
   let msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';msg+='<br>ยอดรวม ฿'+total.toLocaleString();
   msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':'<br>✅ จ่ายเรียบร้อยแล้ว';msg+='<br><br>รอรับของได้เลยนะครับ/ค่ะ 🚛';
-  document.getElementById('successMsg').innerHTML=msg;showPage('successPage');updateBB()}
+  document.getElementById('successMsg').innerHTML=msg;
+
+  // ★ ส่งออเดอร์ไป Google Sheets + แจ้งเตือน LINE อัตโนมัติ ★
+  try{fetch('https://script.google.com/macros/s/AKfycbyY-4xcFk1tyNEZNtuCzsUSS0DxkjAwliup8uFjbcEVshXEKc5un2vIxKvn05iuvuwHjQ/exec',{
+    method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      date:new Date().toLocaleString('th-TH'),
+      orderId:oid,name:name,dept:dept,
+      items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),
+      total:total,
+      payment:payMethod==='now'?'จ่ายแล้ว':'รอจ่ายวันที่ 25'
+    })
+  })}catch(e){}
+
+  showPage('successPage');updateBB()}
 function resetAll(){cart={};payMethod='now';['custName','custDept','custPhone'].forEach(id=>document.getElementById(id).value='');updateBadge();goHome()}
 
 // === ADMIN ===
