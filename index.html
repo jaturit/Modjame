@@ -317,7 +317,9 @@ function uploadHTML(existingImg){
 
 // ★ API CALLS ★
 async function apiGet(action){
-  try{var r=await fetch(API+'?action='+action);return await r.json()}
+  try{var r=await fetch(API+'?action='+action,{redirect:'follow'});
+    var text=await r.text();
+    try{return JSON.parse(text)}catch(e2){return null}}
   catch(e){showToast('⚠️ เชื่อมต่อไม่ได้');return null}}
 async function apiPost(data){
   try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return true}
@@ -437,7 +439,8 @@ function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng=''
 // ★ ADMIN ★
 function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ Admin</h3><div class="input-group"><label class="input-label">รหัสผ่าน</label><input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน" onkeydown="if(event.key===\'Enter\')doLogin()"></div><button class="btn-primary" onclick="doLogin()">🔓 เข้าสู่ระบบ</button><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-light)">รหัสเริ่มต้น: 1234</div>');
   setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
-function doLogin(){if(document.getElementById('adminPassInput').value===(settings.adminPass||'1234')){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
+function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
+  if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
 function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();
   document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
 function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
