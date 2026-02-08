@@ -157,6 +157,22 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .ann-card-body img{width:100%;border-radius:10px;margin-top:12px}
 .line-warn{background:#E8F5E9;border:2px solid #A5D6A7;border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;text-align:center}
 .line-warn a{display:inline-block;margin-top:8px;padding:10px 20px;background:linear-gradient(135deg,#06C755,#04B34F);color:#fff;border-radius:10px;font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;text-decoration:none}
+.date-range{display:flex;gap:10px;margin-bottom:14px;align-items:flex-end}
+.date-range .input-group{flex:1;margin-bottom:0}
+.summary-list{max-height:400px;overflow-y:auto;margin-top:14px}
+.summary-item{background:var(--card);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;box-shadow:var(--shadow);font-size:14px}
+.summary-item-header{display:flex;justify-content:space-between;margin-bottom:4px}
+.summary-item-name{font-family:'Prompt',sans-serif;font-weight:600}
+.summary-item-total{font-family:'Prompt',sans-serif;font-weight:700;color:var(--primary)}
+.summary-item-items{color:var(--text-mid);font-size:13px}
+.summary-totals{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius-sm);padding:16px;color:#fff;margin-top:14px;text-align:center}
+.summary-totals-num{font-family:'Prompt',sans-serif;font-weight:800;font-size:28px}
+.summary-totals-label{font-size:13px;opacity:.8}
+.summary-shopping{background:var(--card);border-radius:var(--radius-sm);padding:14px;margin-top:14px;box-shadow:var(--shadow)}
+.summary-shopping h4{font-family:'Prompt',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px}
+.shopping-item{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px solid var(--border)}
+.shopping-item:last-child{border-bottom:none}
+.btn-line{background:linear-gradient(135deg,#06C755,#04B34F);box-shadow:0 4px 12px rgba(6,199,85,.3)}
 .upload-area{width:100%;aspect-ratio:1;max-width:180px;margin:8px auto 12px;border:3px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;background:var(--card);transition:all .25s}
 .upload-area:active{transform:scale(.97)}
 .upload-area.has-img{border-style:solid;border-color:var(--green)}
@@ -259,6 +275,17 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   <div class="admin-header"><h2>⚙️ จัดการร้านค้า</h2><p>ข้อมูลเก็บใน Google Sheets → ลูกค้าเห็นทันที!</p></div>
   <div id="syncStatus"></div>
   <div class="admin-stat-grid" id="adminStats"></div>
+  <div class="admin-section">
+    <div class="admin-section-title">📋 สรุปรายการสั่งซื้อ</div>
+    <div style="background:var(--card);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow)">
+      <div class="date-range">
+        <div class="input-group"><label class="input-label">จากวันที่</label><input class="input-field" type="date" id="sumFrom"></div>
+        <div class="input-group"><label class="input-label">ถึงวันที่</label><input class="input-field" type="date" id="sumTo"></div>
+      </div>
+      <button class="btn-primary" onclick="loadOrderSummary()" style="margin-top:0">🔍 ดึงรายการ</button>
+      <div id="orderSummaryResult"></div>
+    </div>
+  </div>
   <div class="admin-section">
     <div class="admin-section-title">📦 หมวดหมู่ & สินค้า <button class="btn-primary btn-sm btn-success" onclick="openAddCatModal()">+ หมวดหมู่</button></div>
     <div id="adminProductList"></div>
@@ -472,7 +499,10 @@ function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ 
 function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
   if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
 function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();renderAnnAdmin();
-  document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value=''}
+  document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value='';
+  // Set default date range to today
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('sumFrom').value=today;document.getElementById('sumTo').value=today}
 function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
   document.getElementById('adminStats').innerHTML='<div class="admin-stat"><div class="admin-stat-num">'+tc+'</div><div class="admin-stat-label">หมวดหมู่</div></div><div class="admin-stat"><div class="admin-stat-num">'+tp+'</div><div class="admin-stat-label">สินค้า</div></div>'}
 function renderAdminProducts(){var h='';for(var cid in cats){var c=cats[cid];
@@ -559,6 +589,89 @@ function saveAnnouncement(){
   announcement.message=document.getElementById('annMsg').value.trim();
   announcement.img=annImg;
   apiPost({action:'saveAnnouncement',announcement:announcement});showToast('บันทึกประกาศแล้ว ✅')}
+
+// ★ ORDER SUMMARY ★
+async function loadOrderSummary(){
+  var from=document.getElementById('sumFrom').value;
+  var to=document.getElementById('sumTo').value;
+  if(!from||!to){showToast('กรุณาเลือกวันที่');return}
+  var el=document.getElementById('orderSummaryResult');
+  el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">⏳ กำลังโหลด...</div>';
+  var r=await apiGet('getOrders&from='+from+'&to='+to);
+  if(!r||!r.orders){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">❌ โหลดไม่ได้</div>';return}
+  var orders=r.orders;
+  if(!orders.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">ไม่มีออเดอร์ในช่วงนี้</div>';return}
+  
+  // สร้างลิสรายการ
+  var h='';
+  var grandTotal=0;
+  var shoppingList={};
+  
+  orders.forEach(function(o){
+    grandTotal+=o.total;
+    h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+' • '+o.payment+'</div></div>';
+    
+    // รวมรายการสินค้าสำหรับไปซื้อ
+    if(o.items){
+      o.items.split(', ').forEach(function(item){
+        // Parse: "🦐กุ้งสดx2" → name="กุ้งสด", qty=2
+        var m=item.match(/(.+?)x(\d+)$/);
+        if(m){
+          var name=m[1].replace(/^[\u{1F000}-\u{1FFFF}]/u,'').trim();
+          var qty=parseInt(m[2])||1;
+          if(!shoppingList[name])shoppingList[name]=0;
+          shoppingList[name]+=qty;
+        }
+      });
+    }
+  });
+  
+  // สรุปยอดรวม
+  var result='<div class="summary-totals"><div class="summary-totals-num">'+orders.length+' ออเดอร์ • ฿'+grandTotal.toLocaleString()+'</div><div class="summary-totals-label">'+from+' ถึง '+to+'</div></div>';
+  
+  // ลิสต์ของที่ต้องซื้อ
+  result+='<div class="summary-shopping"><h4>🛒 รายการที่ต้องไปซื้อ</h4>';
+  var shopKeys=Object.keys(shoppingList);
+  if(shopKeys.length){
+    shopKeys.forEach(function(name){
+      result+='<div class="shopping-item"><span>'+name+'</span><span style="font-weight:700">'+shoppingList[name]+' ชิ้น</span></div>';
+    });
+  }else{result+='<div style="color:var(--text-light);font-size:13px">ไม่มีรายการ</div>'}
+  result+='</div>';
+  
+  // ปุ่มส่ง LINE
+  result+='<button class="btn-primary btn-line" onclick="sendSummaryLine()" style="margin-top:14px">📲 ส่งรายการซื้อของไป LINE</button>';
+  
+  // รายการออเดอร์
+  result+='<div style="margin-top:14px;font-family:Prompt;font-weight:700;font-size:15px">📋 รายละเอียดออเดอร์</div><div class="summary-list">'+h+'</div>';
+  
+  el.innerHTML=result;
+  
+  // เก็บข้อมูลไว้สำหรับส่ง LINE
+  window._summaryData={from:from,to:to,orders:orders,grandTotal:grandTotal,shoppingList:shoppingList};
+}
+
+async function sendSummaryLine(){
+  if(!window._summaryData){showToast('กรุณาดึงรายการก่อน');return}
+  var d=window._summaryData;
+  var msg='📋 สรุปรายการสั่งซื้อ\n📅 '+d.from+' ถึง '+d.to+'\n'
+    +'📊 '+d.orders.length+' ออเดอร์ รวม ฿'+d.grandTotal.toLocaleString()+'\n\n';
+  
+  msg+='🛒 รายการที่ต้องซื้อ:\n';
+  var sl=d.shoppingList;
+  for(var name in sl){
+    msg+='• '+name+' × '+sl[name]+'\n';
+  }
+  
+  msg+='\n📦 รายละเอียด:\n';
+  d.orders.forEach(function(o,i){
+    msg+=(i+1)+'. '+o.name+(o.dept?' ('+o.dept+')':'')+' - '+o.items+' ฿'+o.total.toLocaleString()+' ['+o.payment+']\n';
+  });
+  
+  showToast('กำลังส่ง LINE...');
+  await apiPost({action:'sendSummaryLine',message:msg});
+  showToast('✅ ส่งไป LINE แล้ว!');
+}
 
 // INIT
 loadData();
