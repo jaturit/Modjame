@@ -224,7 +224,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 <div class="page" id="checkoutPage">
   <button class="back-btn" onclick="showCart()">← กลับตะกร้า</button>
   <div class="cat-header">💳 ชำระเงิน</div>
-  <div class="input-group"><label class="input-label">ชื่อเล่น</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
+  <div class="input-group"><label class="input-label">ชื่อ - นามสกุล</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
   <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, QC"></div>
   <div class="input-group"><label class="input-label">เบอร์โทร</label><input class="input-field" type="tel" id="custPhone" placeholder="08X-XXX-XXXX"></div>
   <div style="margin-top:20px">
@@ -486,7 +486,7 @@ function confirmOrder(){
   var msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';if(addr)msg+='<br>📍 '+addr;
   msg+='<br>ยอดรวม ฿'+total.toLocaleString();msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':'<br>✅ จ่ายแล้ว (แนบสลิป)';msg+='<br><br>รอรับของได้เลยนะครับ 🚛';
   document.getElementById('successMsg').innerHTML=msg;
-  apiPost({action:'newOrder',date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,
+  apiPost({action:'newOrder',date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,phone:phone,
     items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),total:total,
     payment:payMethod==='now'?'จ่ายแล้ว (มีสลิป)':'รอจ่ายวันที่ 25',addr:addr,location:locUrl,
     slipImg:payMethod==='now'?custSlipImg:''});
@@ -638,7 +638,7 @@ async function loadOrderSummary(){
   
   orders.forEach(function(o){
     grandTotal+=o.total;
-    h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+(o.time?' '+o.time:'')+' • '+o.payment+'</div></div>';
+    h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+(o.time?' '+o.time:'')+(o.phone?' • 📞'+o.phone:'')+' • '+o.payment+'</div></div>';
     
     // รวมรายการสินค้าสำหรับไปซื้อ
     if(o.items){
@@ -694,7 +694,7 @@ async function sendSummaryLine(){
   
   msg+='\n📦 รายละเอียด:\n';
   d.orders.forEach(function(o,i){
-    msg+=(i+1)+'. '+o.name+(o.dept?' ('+o.dept+')':'')+' - '+o.items+' ฿'+o.total.toLocaleString()+' ['+o.payment+']\n';
+    msg+=(i+1)+'. '+o.name+(o.dept?' ('+o.dept+')':'')+(o.phone?' 📞'+o.phone:'')+' - '+o.items+' ฿'+o.total.toLocaleString()+' ['+o.payment+']\n';
   });
   
   showToast('กำลังส่ง LINE...');
