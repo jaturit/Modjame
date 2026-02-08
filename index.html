@@ -613,18 +613,21 @@ async function loadOrderSummary(){
   var fromD=new Date(from);fromD.setHours(0,0,0,0);
   var toD=new Date(to);toD.setHours(23,59,59,999);
   var orders=r.orders.filter(function(o){
-    // Parse Thai date: "8/2/2569, 16:49:05" or "2/8/2026, 4:49:05 PM" etc
     var ds=o.date;
-    var d=new Date(ds);
-    if(isNaN(d.getTime())){
-      var parts=ds.match(/(\d+)\/(\d+)\/(\d+)/);
-      if(parts){
-        var yr=parseInt(parts[3]);if(yr>2500)yr-=543;
-        d=new Date(yr,parseInt(parts[2])-1,parseInt(parts[1]));
-      }
+    // Parse "8/2/2569 11:54:10" or "8/2/2569, 11:54:10" → Thai Buddhist Era
+    var parts=ds.match(/(\d+)\/(\d+)\/(\d+)/);
+    if(parts){
+      var day=parseInt(parts[1]);
+      var mon=parseInt(parts[2])-1;
+      var yr=parseInt(parts[3]);
+      if(yr>2500)yr-=543; // พ.ศ. → ค.ศ.
+      var d=new Date(yr,mon,day);
+      return d>=fromD&&d<=toD;
     }
-    if(isNaN(d.getTime()))return true; // ถ้า parse ไม่ได้ให้แสดงเลย
-    return d>=fromD&&d<=toD;
+    // Fallback: try native parse
+    var d2=new Date(ds);
+    if(!isNaN(d2.getTime()))return d2>=fromD&&d2<=toD;
+    return true; // parse ไม่ได้ → แสดงไว้ก่อน
   });
   if(!orders.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">ไม่มีออเดอร์ในช่วงนี้</div>';return}
   
