@@ -638,7 +638,7 @@ async function loadOrderSummary(){
   
   orders.forEach(function(o){
     grandTotal+=o.total;
-    h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+' • '+o.payment+'</div></div>';
+    h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+(o.time?' '+o.time:'')+' • '+o.payment+'</div></div>';
     
     // รวมรายการสินค้าสำหรับไปซื้อ
     if(o.items){
