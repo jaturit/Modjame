@@ -597,9 +597,35 @@ async function loadOrderSummary(){
   if(!from||!to){showToast('กรุณาเลือกวันที่');return}
   var el=document.getElementById('orderSummaryResult');
   el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">⏳ กำลังโหลด...</div>';
-  var r=await apiGet('getOrders&from='+from+'&to='+to);
-  if(!r||!r.orders){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">❌ โหลดไม่ได้</div>';return}
-  var orders=r.orders;
+  
+  // ใช้ GET with proper URL encoding
+  var url=API+'?action=getOrders&from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to);
+  var r=null;
+  try{
+    var resp=await fetch(url,{redirect:'follow'});
+    var text=await resp.text();
+    r=JSON.parse(text);
+  }catch(e){r=null}
+  
+  if(!r||!r.orders){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">❌ โหลดไม่ได้ ลองใหม่อีกครั้ง</div>';return}
+  
+  // Filter by date on client side
+  var fromD=new Date(from);fromD.setHours(0,0,0,0);
+  var toD=new Date(to);toD.setHours(23,59,59,999);
+  var orders=r.orders.filter(function(o){
+    // Parse Thai date: "8/2/2569, 16:49:05" or "2/8/2026, 4:49:05 PM" etc
+    var ds=o.date;
+    var d=new Date(ds);
+    if(isNaN(d.getTime())){
+      var parts=ds.match(/(\d+)\/(\d+)\/(\d+)/);
+      if(parts){
+        var yr=parseInt(parts[3]);if(yr>2500)yr-=543;
+        d=new Date(yr,parseInt(parts[2])-1,parseInt(parts[1]));
+      }
+    }
+    if(isNaN(d.getTime()))return true; // ถ้า parse ไม่ได้ให้แสดงเลย
+    return d>=fromD&&d<=toD;
+  });
   if(!orders.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">ไม่มีออเดอร์ในช่วงนี้</div>';return}
   
   // สร้างลิสรายการ
