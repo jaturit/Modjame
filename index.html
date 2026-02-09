@@ -359,8 +359,24 @@ function compressImage(file,maxW,quality){
       resolve(canvas.toDataURL('image/jpeg',quality))};img.src=e.target.result};reader.readAsDataURL(file)})}
 function triggerUpload(mode){var inp=document.getElementById('modalFileInput');
   if(mode==='camera')inp.setAttribute('capture','environment');else inp.removeAttribute('capture');inp.click()}
-async function handleModalUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
-  tempUploadImg=await compressImage(input.files[0],300,0.5);
+async function uploadImgToDrive(file,name){
+  var base64=await compressImage(file,400,0.7);
+  showToast('📤 กำลังอัพรูปไป Drive...');
+  try{
+    var r=await fetch(API,{method:'POST',redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'uploadImage',base64:base64,fileName:name||'img_'+Date.now()})});
+    var text=await r.text();
+    var res=JSON.parse(text);
+    if(res&&res.url){showToast('✅ อัพรูปสำเร็จ');return res.url}
+  }catch(e){}
+  // Fallback: ถ้าอัพ Drive ไม่ได้ → ใช้ base64 ตรงๆ (แต่เตือน)
+  showToast('⚠️ อัพ Drive ไม่ได้ ใช้รูปในเครื่องแทน');
+  return base64;
+}
+async function handleModalUpload(input){if(!input.files||!input.files[0])return;
+  showToast('กำลังบีบรูป...');
+  tempUploadImg=await uploadImgToDrive(input.files[0],'product_'+Date.now());
   var a=document.getElementById('modalUploadArea');
   a.innerHTML='<img src="'+tempUploadImg+'"><button class="remove-img" onclick="event.stopPropagation();clearMU()">✕</button>';
   a.classList.add('has-img');showToast('อัพโหลดรูปแล้ว ✅');input.value=''}
@@ -368,8 +384,8 @@ function clearMU(){tempUploadImg='';var a=document.getElementById('modalUploadAr
   a.innerHTML='<span style="font-size:40px">📷</span><span style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--text-light)">อัพโหลดรูป</span>';a.classList.remove('has-img')}
 
 // ★ QR UPLOAD ★
-async function handleQrUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
-  settings.qrImg=await compressImage(input.files[0],300,0.8);
+async function handleQrUpload(input){if(!input.files||!input.files[0])return;
+  settings.qrImg=await uploadImgToDrive(input.files[0],'qr_promptpay');
   renderQrArea();showToast('อัพโหลด QR แล้ว ✅');input.value=''}
 function renderQrArea(){var a=document.getElementById('qrUploadArea');
   if(settings.qrImg){a.innerHTML='<img src="'+settings.qrImg+'"><button class="remove-img" onclick="event.stopPropagation();settings.qrImg=\'\';renderQrArea()">✕</button>';a.classList.add('has-img')}
@@ -633,8 +649,8 @@ function checkLineBrowser(){
     var url=window.location.href;
     el.innerHTML='<div class="line-warn"><div style="font-family:Prompt;font-weight:700;font-size:14px">⚠️ เปิดผ่าน LINE อยู่</div><div style="font-size:13px;color:var(--text-mid);margin-top:4px">GPS / แนบสลิปอาจใช้ไม่ได้ กรุณาเปิดในเบราว์เซอร์</div><a href="'+url+'" target="_blank">🌐 เปิดในเบราว์เซอร์</a></div>'
   }else{el.innerHTML=''}}
-async function handleAnnImg(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
-  annImg=await compressImage(input.files[0],500,0.75);
+async function handleAnnImg(input){if(!input.files||!input.files[0])return;
+  annImg=await uploadImgToDrive(input.files[0],'announce_'+Date.now());
   var a=document.getElementById('annImgArea');
   a.innerHTML='<img src="'+annImg+'"><button class="remove-img" onclick="event.stopPropagation();clearAnnImg()">✕</button>';
   a.classList.add('has-img');showToast('อัพโหลดรูปแล้ว ✅');input.value=''}
