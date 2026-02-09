@@ -26,6 +26,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .hero-title{font-family:'Prompt',sans-serif;font-weight:800;font-size:26px;color:#fff;margin-bottom:6px;position:relative;z-index:1}
 .hero-subtitle{font-size:15px;color:rgba(255,255,255,.85);position:relative;z-index:1}
 .hero-emoji{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:64px;z-index:1}
+.home-tabs{display:flex;background:var(--card);border-radius:14px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow)}
+.home-tab{flex:1;padding:12px;text-align:center;font-family:'Prompt',sans-serif;font-weight:700;font-size:15px;border-radius:11px;cursor:pointer;transition:all .25s;color:var(--text-light);border:none;background:transparent}
+.home-tab:active{transform:scale(.97)}
+.home-tab.active{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(232,83,63,.3)}
+.tab-content{display:none;animation:fadeIn .3s ease}
+.tab-content.active{display:block}
 .featured-card{background:var(--card);border-radius:var(--radius);margin-bottom:24px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all .3s}
 .featured-card:active{transform:scale(.98)}
 .featured-img{width:100%;height:180px;background:linear-gradient(135deg,#FFE5D9,#FFC3A0);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;overflow:hidden}
@@ -201,12 +207,21 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="page active" id="homePage">
   <div class="hero-banner"><div class="hero-title">สั่งของสดจากตลาด</div><div class="hero-subtitle">ส่งถึงบ้าน ทุกวัน 🚛</div><div class="hero-emoji">🦐</div></div>
-  <div id="annArea"></div>
   <div id="lineBrowserWarn"></div>
-  <div id="featuredArea"></div>
-  <div class="section-title">📦 หมวดหมู่สินค้า</div>
-  <div class="category-grid" id="categoryGrid"></div>
-  <div id="homeLoading" class="loading"><div class="loading-spinner"></div><div class="loading-text">กำลังโหลดสินค้า...</div></div>
+  <div class="home-tabs">
+    <button class="home-tab" onclick="switchTab('shop')">🛒 สั่งสินค้า</button>
+    <button class="home-tab active" onclick="switchTab('announce')" id="annTab">📢 ประกาศ</button>
+  </div>
+  <div class="tab-content" id="tabShop">
+    <div id="featuredArea"></div>
+    <div class="section-title">📦 หมวดหมู่สินค้า</div>
+    <div class="category-grid" id="categoryGrid"></div>
+    <div id="homeLoading" class="loading"><div class="loading-spinner"></div><div class="loading-text">กำลังโหลดสินค้า...</div></div>
+  </div>
+  <div class="tab-content active" id="tabAnnounce">
+    <div id="annArea"></div>
+    <div style="text-align:center;padding:20px;color:var(--text-light)" id="annEmpty">ไม่มีประกาศ</div>
+  </div>
 </div>
 
 <div class="page" id="categoryPage">
@@ -415,7 +430,18 @@ function showSyncStatus(type,msg){
 // ★ HELPERS ★
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function goHome(){showPage('homePage');renderHome();updateBB()}
+function goHome(){showPage('homePage');renderHome();updateBB();switchTab('shop')}
+function switchTab(tab){
+  document.querySelectorAll('.home-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active')});
+  if(tab==='announce'){
+    document.getElementById('annTab').classList.add('active');
+    document.getElementById('tabAnnounce').classList.add('active');
+  }else{
+    document.querySelector('.home-tab').classList.add('active');
+    document.getElementById('tabShop').classList.add('active');
+  }
+  window.scrollTo(0,0)}
 function openModal(h){document.getElementById('modalContent').innerHTML=h;document.getElementById('modalOverlay').classList.add('show')}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show');document.getElementById('modalContent').innerHTML='';tempUploadImg=''}
 function gid(){return 'p'+Date.now().toString(36)+Math.random().toString(36).substr(2,4)}
@@ -558,7 +584,13 @@ async function loadAnnouncement(){
   renderAnnouncement()}
 function renderAnnouncement(){
   var el=document.getElementById('annArea');
-  if(!announcement.enabled||(!announcement.message&&!announcement.img)){el.innerHTML='';return}
+  var empty=document.getElementById('annEmpty');
+  var tab=document.getElementById('annTab');
+  if(!announcement.enabled||(!announcement.message&&!announcement.img)){
+    el.innerHTML='';empty.style.display='block';
+    tab.textContent='📢 ประกาศ';return}
+  empty.style.display='none';
+  tab.textContent='📢 ประกาศ 🔴';
   var h='<div class="ann-card"><div class="ann-card-header">'+(announcement.title||'📢 ประกาศ')+'</div><div class="ann-card-body">';
   if(announcement.message)h+='<p>'+announcement.message+'</p>';
   if(announcement.img)h+='<img src="'+announcement.img+'">';
