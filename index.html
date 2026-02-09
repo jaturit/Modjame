@@ -391,12 +391,15 @@ async function apiGet(action){
   catch(e){showToast('⚠️ เชื่อมต่อไม่ได้');return null}}
 async function apiPost(data){
   try{
-    // ใช้ no-cors + text/plain เพื่อหลีก CORS (Apps Script รองรับ)
-    var r=await fetch(API,{method:'POST',mode:'no-cors',
+    var r=await fetch(API,{method:'POST',redirect:'follow',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify(data)});
     return true;
-  }catch(e){showToast('⚠️ ส่งข้อมูลไม่ได้');return false}}
+  }catch(e){
+    // Fallback: no-cors (ยังส่งได้แต่ไม่เห็น response)
+    try{await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)});return true}
+    catch(e2){showToast('⚠️ ส่งข้อมูลไม่ได้');return false}
+  }}
 
 // ★ LOAD DATA FROM SHEETS ★
 async function loadData(){
@@ -425,10 +428,10 @@ async function loadData(){
 
 // ★ SAVE TO SHEETS (Admin) ★
 async function syncProducts(){
-  showSyncStatus('loading','กำลังบันทึก...');
-  await apiPost({action:'saveProducts',products:cats});
-  showSyncStatus('ok','บันทึกแล้ว ✅ ลูกค้าเห็นทันที!');
-  setTimeout(function(){showSyncStatus('','')},3000);
+  showSyncStatus('loading','กำลังบันทึกไป Sheets...');
+  var ok=await apiPost({action:'saveProducts',products:cats});
+  if(ok){showSyncStatus('ok','✅ บันทึกแล้ว! ลูกค้าเห็นทันที');setTimeout(function(){showSyncStatus('','')},3000)}
+  else{showSyncStatus('error','❌ บันทึกไม่ได้ ลองกดบันทึกอีกครั้ง')}
 }
 function showSyncStatus(type,msg){
   var el=document.getElementById('syncStatus');
