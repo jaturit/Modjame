@@ -428,10 +428,19 @@ async function loadData(){
 
 // ★ SAVE TO SHEETS (Admin) ★
 async function syncProducts(){
+  // ★ ป้องกัน: ห้ามส่ง cats ว่างไป Sheets
+  var count=0;for(var k in cats)count++;
+  if(count===0){showSyncStatus('error','❌ ไม่มีข้อมูลสินค้า ยกเลิกการบันทึก');return}
+  
   showSyncStatus('loading','กำลังบันทึกไป Sheets...');
   var ok=await apiPost({action:'saveProducts',products:cats});
-  if(ok){showSyncStatus('ok','✅ บันทึกแล้ว! ลูกค้าเห็นทันที');setTimeout(function(){showSyncStatus('','')},3000)}
-  else{showSyncStatus('error','❌ บันทึกไม่ได้ ลองกดบันทึกอีกครั้ง')}
+  if(ok){
+    localStorage.setItem('of_cache',JSON.stringify(cats));
+    showSyncStatus('ok','✅ บันทึกแล้ว! ลูกค้าเห็นทันที');
+    setTimeout(function(){showSyncStatus('','')},3000);
+  }else{
+    showSyncStatus('error','❌ บันทึกไม่ได้ ลองกดบันทึกอีกครั้ง');
+  }
 }
 function showSyncStatus(type,msg){
   var el=document.getElementById('syncStatus');
@@ -542,9 +551,15 @@ function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ 
   setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
 function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
   if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
-function openAdmin(){showPage('adminPage');updateBB();renderAdminStats();renderAdminProducts();renderQrArea();renderAnnAdmin();
+async function openAdmin(){
+  showPage('adminPage');updateBB();
+  // ★ โหลดข้อมูลล่าสุดจาก Sheets ก่อนเสมอ (ป้องกัน overwrite)
+  showSyncStatus('loading','กำลังโหลดข้อมูลล่าสุด...');
+  var p=await apiGet('getProducts');
+  if(p&&p.cats){cats=p.cats;localStorage.setItem('of_cache',JSON.stringify(cats))}
+  showSyncStatus('','');
+  renderAdminStats();renderAdminProducts();renderQrArea();renderAnnAdmin();
   document.getElementById('adminFee').value=settings.laterFee||20;document.getElementById('adminNewPass').value='';
-  // Set default date range to today
   var today=new Date().toISOString().split('T')[0];
   document.getElementById('sumFrom').value=today;document.getElementById('sumTo').value=today}
 function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
