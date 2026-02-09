@@ -209,8 +209,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   <div class="hero-banner"><div class="hero-title">สั่งของสดจากตลาด</div><div class="hero-subtitle">ส่งถึงบ้าน ทุกวัน 🚛</div><div class="hero-emoji">🦐</div></div>
   <div id="lineBrowserWarn"></div>
   <div class="home-tabs">
-    <button class="home-tab" onclick="switchTab('shop')">🛒 สั่งสินค้า</button>
     <button class="home-tab active" onclick="switchTab('announce')" id="annTab">📢 ประกาศ</button>
+    <button class="home-tab" onclick="switchTab('shop')">🛒 สั่งสินค้า</button>
   </div>
   <div class="tab-content" id="tabShop">
     <div id="featuredArea"></div>
@@ -403,14 +403,23 @@ async function loadData(){
   document.getElementById('homeLoading').style.display='block';
   document.getElementById('categoryGrid').innerHTML='';
   document.getElementById('featuredArea').innerHTML='';
-  var p=await apiGet('getProducts');
+  
+  // ★ โหลดทุกอย่างพร้อมกัน ไม่ต้องรอทีละตัว
+  var results=await Promise.all([
+    apiGet('getProducts'),
+    apiGet('getSettings'),
+    apiGet('getAnnouncement')
+  ]);
+  
+  var p=results[0],s=results[1],a=results[2];
   if(p&&p.cats){cats=p.cats;localStorage.setItem('of_cache',JSON.stringify(cats))}
   else{try{cats=JSON.parse(localStorage.getItem('of_cache'))||{}}catch(e){cats={}}}
-  var s=await apiGet('getSettings');
   if(s&&s.settings)settings=Object.assign(settings,s.settings);
+  if(a&&a.announcement)announcement=a.announcement;
+  
   document.getElementById('homeLoading').style.display='none';
   renderHome();
-  await loadAnnouncement();
+  renderAnnouncement();
   checkLineBrowser();
 }
 
@@ -438,7 +447,7 @@ function switchTab(tab){
     document.getElementById('annTab').classList.add('active');
     document.getElementById('tabAnnounce').classList.add('active');
   }else{
-    document.querySelector('.home-tab').classList.add('active');
+    document.querySelectorAll('.home-tab')[1].classList.add('active');
     document.getElementById('tabShop').classList.add('active');
   }
   window.scrollTo(0,0)}
