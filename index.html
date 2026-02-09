@@ -360,7 +360,7 @@ function compressImage(file,maxW,quality){
 function triggerUpload(mode){var inp=document.getElementById('modalFileInput');
   if(mode==='camera')inp.setAttribute('capture','environment');else inp.removeAttribute('capture');inp.click()}
 async function handleModalUpload(input){if(!input.files||!input.files[0])return;showToast('กำลังบีบรูป...');
-  tempUploadImg=await compressImage(input.files[0],400,0.7);
+  tempUploadImg=await compressImage(input.files[0],300,0.5);
   var a=document.getElementById('modalUploadArea');
   a.innerHTML='<img src="'+tempUploadImg+'"><button class="remove-img" onclick="event.stopPropagation();clearMU()">✕</button>';
   a.classList.add('has-img');showToast('อัพโหลดรูปแล้ว ✅');input.value=''}
