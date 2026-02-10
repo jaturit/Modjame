@@ -200,7 +200,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .admin-stock-btn{padding:4px 10px;border-radius:8px;border:none;font-size:12px;font-family:'Prompt',sans-serif;font-weight:600;cursor:pointer}
 .admin-stock-on{background:#E8F5E9;color:#2E7D32}
 .admin-stock-off{background:#FFEBEE;color:#C62828}
-.cimg{width:100%;height:100px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:48px;background:#f5f0ea;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.admin-cat-toggle{cursor:pointer;user-select:none}
+.admin-cat-toggle::before{content:'▼';display:inline-block;width:20px;font-size:12px;transition:transform .2s}
+.admin-cat-toggle.collapsed::before{transform:rotate(-90deg)}
+.admin-cat-items{overflow:hidden;transition:max-height .3s ease;max-height:2000px}
+.admin-cat-items.collapsed{max-height:0}
+.cimg{width:100%;height:140px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:48px;background:#f5f0ea;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
 .cimg img{width:100%;height:100%;object-fit:cover}
 .category-card{overflow:hidden;padding:0}
 .category-card .category-text{padding:14px 12px}
@@ -254,8 +259,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, QC"></div>
   <div class="input-group"><label class="input-label">เบอร์โทร</label><input class="input-field" type="tel" id="custPhone" placeholder="08X-XXX-XXXX"></div>
   <div style="margin-top:20px">
-    <div class="input-label">📍 ที่อยู่จัดส่ง <span style="color:var(--primary)">(จำเป็น)</span></div>
-    <div class="input-group"><input class="input-field" type="text" id="custAddr" placeholder="เช่น บ้าน/หอพัก ชื่อซอย ตำบล"></div>
+    <div class="input-label">💬 หมายเหตุ / ข้อความถึงร้าน</div>
+    <div class="input-group"><textarea class="input-field" id="custAddr" placeholder="เช่น อยากได้กุ้งตัวใหญ่ๆ, ส่งก่อน 12.00 น." rows="2" style="resize:vertical"></textarea></div>
     <div class="loc-card" id="locCard">
       <div style="font-family:'Prompt';font-weight:600;font-size:15px;text-align:center">📍 แชร์พิกัด GPS ให้คนขับ</div>
       <div class="loc-note">⚠️ กรุณากดแชร์พิกัดเพื่อให้เราขับไปส่งถึงบ้าน/หอพักได้ถูกที่</div>
@@ -266,7 +271,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   <div class="payment-section">
     <div class="payment-title">💰 เลือกวิธีชำระเงิน</div>
     <div class="payment-options">
-      <div class="payment-option selected" onclick="selectPayment('now')"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">จ่ายเลยตอนนี้</div><div class="payment-option-desc">สแกน QR Code จ่ายทันที</div></div><div class="payment-option-badge free">ไม่มีค่าธรรมเนียม</div></div>
+      <div class="payment-option selected" onclick="selectPayment('now')"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">สแกนจ่ายเลย</div><div class="payment-option-desc">สแกน QR Code จ่ายทันที</div></div><div class="payment-option-badge free">ไม่มีค่าธรรมเนียม</div></div>
+      <div class="payment-option" onclick="selectPayment('cash')"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">💵 จ่ายเงินสด</div><div class="payment-option-desc">จ่ายตอนรับของ</div></div><div class="payment-option-badge free">ไม่มีค่าธรรมเนียม</div></div>
       <div class="payment-option" onclick="selectPayment('later')"><div class="payment-radio"></div><div class="payment-option-info"><div class="payment-option-title">จ่ายวันที่ 25 (เงินเดือนออก)</div><div class="payment-option-desc">หักจากเงินเดือน +ค่าธรรมเนียม</div></div><div class="payment-option-badge">+฿</div></div>
     </div>
   </div>
@@ -535,7 +541,7 @@ function rmCart(id){delete cart[id];updateBadge();showCart()}
 // CHECKOUT
 function goCheckout(){payMethod='now';custSlipImg='';updCS();updPay();showPage('checkoutPage');updateBB()}
 function selectPayment(m){payMethod=m;updPay();updCS()}
-function updPay(){document.querySelectorAll('.payment-option').forEach(function(el,i){el.classList.toggle('selected',(i===0&&payMethod==='now')||(i===1&&payMethod==='later'))});
+function updPay(){document.querySelectorAll('.payment-option').forEach(function(el,i){el.classList.toggle('selected',(i===0&&payMethod==='now')||(i===1&&payMethod==='cash')||(i===2&&payMethod==='later'))});
   document.getElementById('qrSection').style.display=payMethod==='now'?'block':'none';
   if(payMethod==='now'){document.getElementById('qrAmount').textContent='฿'+gTotal().toLocaleString();
     var qb=document.getElementById('qrBox');
@@ -577,14 +583,14 @@ function confirmOrder(){
   var oi=[];for(var id in cart){var p=findP(id);if(p)oi.push({name:p.name,price:p.price,qty:cart[id],emoji:p.emoji})}
   var locUrl='https://www.google.com/maps?q='+custLat+','+custLng;
   document.getElementById('orderIdDisplay').textContent='หมายเลขออเดอร์: '+oid;
-  var msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';if(addr)msg+='<br>📍 '+addr;
-  msg+='<br>ยอดรวม ฿'+total.toLocaleString();msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':'<br>✅ จ่ายแล้ว (แนบสลิป)';msg+='<br><br>รอรับของได้เลยนะครับ 🚛';
+  var msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';if(addr)msg+='<br>💬 '+addr;
+  msg+='<br>ยอดรวม ฿'+total.toLocaleString();msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':payMethod==='cash'?'<br>💵 จ่ายเงินสดตอนรับของ':'<br>✅ จ่ายแล้ว (แนบสลิป)';msg+='<br><br>รอรับของได้เลยนะครับ 🚛';
   document.getElementById('successMsg').innerHTML=msg;
   // สร้าง cartItems สำหรับลดสต็อก
   var cartItems=[];for(var cid in cart){cartItems.push({id:cid,qty:cart[cid]})}
   apiPost({action:'newOrder',date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,phone:phone,
     items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),total:total,
-    payment:payMethod==='now'?'จ่ายแล้ว (มีสลิป)':'รอจ่ายวันที่ 25',addr:addr,location:locUrl,
+    payment:payMethod==='now'?'จ่ายแล้ว (มีสลิป)':payMethod==='cash'?'💵 จ่ายเงินสด':'รอจ่ายวันที่ 25',addr:addr,location:locUrl,
     slipImg:payMethod==='now'?custSlipImg:'',cartItems:cartItems});
   showPage('successPage');updateBB()}
 function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng='';['custName','custDept','custPhone','custAddr'].forEach(function(id){document.getElementById(id).value=''});updateBadge();goHome()}
@@ -608,13 +614,18 @@ async function openAdmin(){
 function renderAdminStats(){var tp=0,tc=Object.keys(cats).length;for(var k in cats)tp+=(cats[k].items||[]).length;
   document.getElementById('adminStats').innerHTML='<div class="admin-stat"><div class="admin-stat-num">'+tc+'</div><div class="admin-stat-label">หมวดหมู่</div></div><div class="admin-stat"><div class="admin-stat-num">'+tp+'</div><div class="admin-stat-label">สินค้า</div></div>'}
 function renderAdminProducts(){var h='';for(var cid in cats){var c=cats[cid];
-    h+='<div class="admin-cat-header"><div class="admin-cat-name">'+c.emoji+' '+c.name+' <span style="font-weight:400;font-size:13px;color:var(--text-light)">'+(c.items||[]).length+'</span></div><div style="display:flex;gap:6px"><button class="btn-primary btn-sm btn-success" onclick="openAddItemModal(\''+cid+'\')" style="font-size:12px;padding:6px 12px">+ สินค้า</button><button class="btn-edit" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="openEditCatModal(\''+cid+'\')">✏️</button><button class="btn-del" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="delCat(\''+cid+'\')">🗑️</button></div></div>';
+    h+='<div class="admin-cat-header"><div class="admin-cat-name admin-cat-toggle" onclick="toggleCatAdmin(\''+cid+'\')">'+c.emoji+' '+c.name+' <span style="font-weight:400;font-size:13px;color:var(--text-light)">'+(c.items||[]).length+'</span></div><div style="display:flex;gap:6px"><button class="btn-primary btn-sm btn-success" onclick="openAddItemModal(\''+cid+'\')" style="font-size:12px;padding:6px 12px">+ สินค้า</button><button class="btn-edit" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="openEditCatModal(\''+cid+'\')">✏️</button><button class="btn-del" style="width:32px;height:32px;border-radius:8px;border:none;cursor:pointer" onclick="delCat(\''+cid+'\')">🗑️</button></div></div>';
+    h+='<div class="admin-cat-items collapsed" id="admin-items-'+cid+'">';
     (c.items||[]).forEach(function(it){var stockTxt='';
       if(it.stock===0)stockTxt='<button class="admin-stock-btn admin-stock-off" onclick="event.stopPropagation();toggleStock(\''+cid+'\',\''+it.id+'\')">❌ หมด</button>';
       else if(it.stock!==undefined&&it.stock!=='')stockTxt='<button class="admin-stock-btn admin-stock-on" onclick="event.stopPropagation();toggleStock(\''+cid+'\',\''+it.id+'\')">✅ '+it.stock+'</button>';
       else stockTxt='<button class="admin-stock-btn admin-stock-on" onclick="event.stopPropagation();toggleStock(\''+cid+'\',\''+it.id+'\')">✅ มี</button>';
-      h+='<div class="admin-item"><div class="pimg" style="width:44px;height:44px">'+imgH(it.img,it.emoji,28)+'</div><div class="admin-item-info"><div class="admin-item-name">'+it.name+'</div><div class="admin-item-detail">฿'+it.price+' / '+(it.unit||'ชิ้น')+' '+stockTxt+'</div></div><div class="admin-item-actions"><button class="btn-edit" onclick="openEditItemModal(\''+cid+'\',\''+it.id+'\')">✏️</button><button class="btn-del" onclick="delItem(\''+cid+'\',\''+it.id+'\')">🗑️</button></div></div>'})}
+      h+='<div class="admin-item"><div class="pimg" style="width:44px;height:44px">'+imgH(it.img,it.emoji,28)+'</div><div class="admin-item-info"><div class="admin-item-name">'+it.name+'</div><div class="admin-item-detail">฿'+it.price+' / '+(it.unit||'ชิ้น')+' '+stockTxt+'</div></div><div class="admin-item-actions"><button class="btn-edit" onclick="openEditItemModal(\''+cid+'\',\''+it.id+'\')">✏️</button><button class="btn-del" onclick="delItem(\''+cid+'\',\''+it.id+'\')">🗑️</button></div></div>'});
+    h+='</div>';}
   document.getElementById('adminProductList').innerHTML=h||'<div class="empty-state"><div class="empty-state-icon">📦</div>ยังไม่มีหมวดหมู่</div>'}
+function toggleCatAdmin(cid){var el=document.getElementById('admin-items-'+cid);
+  var toggle=el.previousElementSibling.querySelector('.admin-cat-toggle');
+  el.classList.toggle('collapsed');toggle.classList.toggle('collapsed')}
 
 // ADMIN CRUD - ใช้ global var ป้องกัน escape bug
 function openAddCatModal(){tempUploadImg='';openModal('<h3>➕ เพิ่มหมวดหมู่</h3><div class="input-group"><label class="input-label">ชื่อ</label><input class="input-field" id="m_cn" placeholder="เช่น เครื่องดื่ม"></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" placeholder="🥤"></div>'+uploadHTML('')+'<button class="btn-primary btn-success" onclick="doAddCat()">✅ เพิ่ม</button>')}
