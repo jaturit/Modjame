@@ -926,36 +926,10 @@ async function sendSummaryLine(){
 loadData();
 </script>
 <script>
-// ===== FORCE OPEN IN CHROME + CONTROL BACK =====
+// ===== CONTROL BACK IN CHROME =====
 (function () {
 
-  var ua = navigator.userAgent || "";
-  var isLine = ua.indexOf("Line/") !== -1;
-  var isAndroid = /Android/i.test(ua);
-  var isIOS = /iPhone|iPad|iPod/i.test(ua);
-
-  var url = window.location.href;
-
-  // ===== 1) ถ้าเปิดใน LINE → เด้งไป Chrome =====
-  if (isLine) {
-
-    // Android → Chrome ผ่าน intent
-    if (isAndroid) {
-      var clean = url.replace(/^https?:\/\//, "");
-      window.location.replace(
-        "intent://" + clean + "#Intent;scheme=https;package=com.android.chrome;end"
-      );
-      return;
-    }
-
-    // iOS → Safari (LINE บางเวอร์ชันจะไม่ยอม auto)
-    if (isIOS) {
-      window.location.replace(url);
-      return;
-    }
-  }
-
-  // ===== 2) ถ้าอยู่ใน Chrome → คุมปุ่ม Back =====
+  // เพิ่ม history 1 ชั้น
   history.pushState({page:"init"}, "", location.href);
 
   window.addEventListener("popstate", function () {
