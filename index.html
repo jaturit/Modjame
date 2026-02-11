@@ -925,23 +925,33 @@ async function sendSummaryLine(){
 // INIT
 loadData();
 </script>
+<!-- 1) เด้งไป Chrome -->
 <script>
-// ===== CONTROL BACK IN CHROME =====
 (function () {
+  var ua = navigator.userAgent || "";
+  var isLine = ua.indexOf("Line/") !== -1;
+  if (!isLine) return;
 
-  // เพิ่ม history 1 ชั้น
-  history.pushState({page:"init"}, "", location.href);
+  var url = window.location.href;
 
-  window.addEventListener("popstate", function () {
-
-    if (typeof showPage === "function") {
-      showPage("homePage"); // กลับหน้า Home
-      history.pushState({page:"home"}, "", location.href);
-    }
-
-  });
-
+  if (/Android/i.test(ua)) {
+    var clean = url.replace(/^https?:\/\//, "");
+    window.location.replace(
+      "intent://" + clean + "#Intent;scheme=https;package=com.android.chrome;end"
+    );
+  }
 })();
+</script>
+
+<!-- 2) คุม Back (ทำงานเมื่ออยู่ใน Chrome แล้ว) -->
+<script>
+history.pushState({}, "", location.href);
+window.addEventListener("popstate", function () {
+  if (typeof showPage === "function") {
+    showPage("homePage");
+    history.pushState({}, "", location.href);
+  }
+});
 </script>
 
 </body>
