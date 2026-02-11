@@ -263,8 +263,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 <div class="page" id="checkoutPage">
   <button class="back-btn" onclick="showCart()">← กลับตะกร้า</button>
   <div class="cat-header">💳 ชำระเงิน</div>
-  <div class="input-group"><label class="input-label">ชื่อ - นามสกุล</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
-  <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, QC"></div>
+  <div class="input-group"><label class="input-label">ชื่อเล่น</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
+  <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, โรงไหน"></div>
   <div class="input-group"><label class="input-label">เบอร์โทร</label><input class="input-field" type="tel" id="custPhone" placeholder="08X-XXX-XXXX"></div>
   <div style="margin-top:20px">
     <div class="input-label">💬 หมายเหตุ / ข้อความถึงร้าน</div>
@@ -366,8 +366,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 <div class="toast" id="toast"></div>
 
 <script>
-// CONFIG - ใส่ URL ของ Apps Script ที่ Deploy แล้ว
-var API='https://script.google.com/macros/s/AKfycbzVBHbJDuoZFurSDc7qgNtdb9zl2EnXYdVuc474ivu8q0KuwH378FkvKNbRTzB8D62WJA/exec';
+// ★★★ CONFIG - ใส่ URL ของ Apps Script ที่ Deploy แล้ว ★★★
+var API='https://script.google.com/macros/s/AKfycby4PXa-NrnVkKwdK2QV3kXSKbAf_EX00c-wK1RoHyBCLG2zN7VH1cixm66ksn9nmKq1sQ/exec';
 
 var cats={},settings={laterFee:20,adminPass:'1234',qrImg:''},cart={},payMethod='now';
 var custSlipImg='',custLat='',custLng='';
@@ -375,7 +375,7 @@ var announcement={enabled:false,title:'',message:'',img:''},annImg='';
 var _eCatId='',_eItemCatId='',_eItemId='',_aItemCatId='';
 var tempUploadImg='';
 
-// IMAGE COMPRESS & UPLOAD
+// ★ IMAGE COMPRESS & UPLOAD ★
 function compressImage(file,maxW,quality){
   return new Promise(function(resolve){var reader=new FileReader();reader.onload=function(e){
     var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');
@@ -395,6 +395,7 @@ async function uploadImgToDrive(file,name){
     var res=JSON.parse(text);
     if(res&&res.url){showToast('✅ อัพรูปสำเร็จ');return res.url}
   }catch(e){}
+  // Fallback: ถ้าอัพ Drive ไม่ได้ → ใช้ base64 ตรงๆ (แต่เตือน)
   showToast('⚠️ อัพ Drive ไม่ได้ ใช้รูปในเครื่องแทน');
   return base64;
 }
@@ -407,7 +408,7 @@ async function handleModalUpload(input){if(!input.files||!input.files[0])return;
 function clearMU(){tempUploadImg='';var a=document.getElementById('modalUploadArea');
   a.innerHTML='<span style="font-size:40px">📷</span><span style="font-family:Prompt;font-weight:600;font-size:13px;color:var(--text-light)">อัพโหลดรูป</span>';a.classList.remove('has-img')}
 
-// QR UPLOAD
+// ★ QR UPLOAD ★
 async function handleQrUpload(input){if(!input.files||!input.files[0])return;
   settings.qrImg=await uploadImgToDrive(input.files[0],'qr_promptpay');
   renderQrArea();showToast('อัพโหลด QR แล้ว ✅');input.value=''}
@@ -423,7 +424,7 @@ function uploadHTML(existingImg){
     '<button type="button" onclick="triggerUpload(\'gallery\')">🖼️ แกลเลอรี่</button></div>'+
     '<input type="file" id="modalFileInput" accept="image/*" style="display:none" onchange="handleModalUpload(this)"></div>'}
 
-// API CALLS
+// ★ API CALLS ★
 async function apiGet(action){
   try{var r=await fetch(API+'?action='+action,{redirect:'follow'});
     var text=await r.text();
@@ -436,16 +437,18 @@ async function apiPost(data){
       body:JSON.stringify(data)});
     return true;
   }catch(e){
+    // Fallback: no-cors (ยังส่งได้แต่ไม่เห็น response)
     try{await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify(data)});return true}
     catch(e2){showToast('⚠️ ส่งข้อมูลไม่ได้');return false}
   }}
 
-// LOAD DATA FROM SHEETS
+// ★ LOAD DATA FROM SHEETS ★
 async function loadData(){
   document.getElementById('homeLoading').style.display='block';
   document.getElementById('categoryGrid').innerHTML='';
   document.getElementById('featuredArea').innerHTML='';
   
+  // ★ โหลดทุกอย่างพร้อมกัน ไม่ต้องรอทีละตัว
   var results=await Promise.all([
     apiGet('getProducts'),
     apiGet('getSettings'),
@@ -464,8 +467,9 @@ async function loadData(){
   checkLineBrowser();
 }
 
-// SAVE TO SHEETS (Admin)
+// ★ SAVE TO SHEETS (Admin) ★
 async function syncProducts(){
+  // ★ ป้องกัน: ห้ามส่ง cats ว่างไป Sheets
   var count=0;for(var k in cats)count++;
   if(count===0){showSyncStatus('error','❌ ไม่มีข้อมูลสินค้า ยกเลิกการบันทึก');return}
   
@@ -485,7 +489,7 @@ function showSyncStatus(type,msg){
   el.innerHTML='<div class="sync-status sync-'+type+'">'+msg+'</div>';
 }
 
-// HELPERS
+// ★ HELPERS ★
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
 function goHome(){showPage('homePage');renderHome();updateBB();switchTab('shop')}
@@ -508,6 +512,7 @@ function zoomImg(src){var d=document.createElement('div');d.className='lightbox'
   d.innerHTML='<button class="lightbox-close" onclick="event.stopPropagation();this.parentElement.remove()">✕</button><img src="'+src+'">';
   document.body.appendChild(d)}
 function findP(id){
+  // Handle size key: "itemId__sizeIdx"
   var baseId=id.split('__')[0];
   for(var k in cats){var f=(cats[k].items||[]).find(function(p){return p.id===baseId});if(f)return f}return null}
 function getCartPrice(id){
@@ -523,7 +528,7 @@ function gCount(){var c=0;for(var k in cart)c+=cart[k];return c}
 function updateBadge(){var c=gCount(),b=document.getElementById('cartBadge');b.textContent=c;b.classList.toggle('show',c>0)}
 function updateBB(){var c=gCount(),t=gTotal(),bar=document.getElementById('bottomBar');var hide=['cartPage','checkoutPage','successPage','adminPage'].some(function(id){return document.getElementById(id).classList.contains('active')});if(c>0&&!hide){bar.classList.add('show');document.getElementById('bottomItems').textContent=c+' รายการ';document.getElementById('bottomTotal').textContent='฿'+t.toLocaleString()}else bar.classList.remove('show')}
 
-// CUSTOMER PAGES
+// ★ CUSTOMER PAGES ★
 function renderHome(){
   var fh='',fc=null;for(var fid in cats){if(cats[fid].featured){fc=[fid,cats[fid]];break}}
   if(fc){var c=fc[1];fh='<div class="featured-card" onclick="goToCat(\''+fc[0]+'\')"><div class="featured-img">'+(c.img?'<img src="'+c.img+'" style="width:100%;height:100%;object-fit:cover">':c.emoji)+'<div class="featured-tag">⭐ แนะนำวันนี้</div></div><div class="featured-info"><div class="featured-name">'+c.name+'</div><div class="featured-price">'+(c.featuredPrice||'')+'</div></div></div>'}
@@ -538,8 +543,10 @@ function goToCat(cid){var c=cats[cid];if(!c)return;document.getElementById('catH
     var hasSizes=it.sizes&&it.sizes.length>0;
     var priceDisplay='';
     if(hasSizes){
+      // แสดงราคาช่วง
       var minP=it.sizes[0].price,maxP=it.sizes[it.sizes.length-1].price;
       priceDisplay='<div class="product-price">฿'+minP+(minP!==maxP?' - ฿'+maxP:'')+'</div>';
+      // ปุ่มเลือกขนาด
       priceDisplay+='<div class="size-options" id="sizes-'+it.id+'">';
       it.sizes.forEach(function(sz,si){
         priceDisplay+='<button class="size-btn" onclick="event.stopPropagation();selectSize(\''+it.id+'\','+si+','+sz.price+',\''+(it.stock||999)+'\')">'+sz.label+'<br>฿'+sz.price+'</button>';
@@ -548,10 +555,12 @@ function goToCat(cid){var c=cats[cid];if(!c)return;document.getElementById('catH
     }else{
       priceDisplay='<div class="product-price">฿'+it.price+' <span class="product-unit">/ '+(it.unit||'ชิ้น')+'</span></div>';
     }
+    // qty area
     var qtyArea='';
     if(isSoldOut){
       qtyArea='<div style="padding:8px"><span class="sold-out-badge">สินค้าหมด</span></div>';
     }else if(hasSizes){
+      // แสดง qty ของแต่ละ size ที่เลือกแล้ว
       var qtyH='<div style="margin-top:6px" id="sizeqty-'+it.id+'">';
       it.sizes.forEach(function(sz,si){
         var cartKey=it.id+'__'+si;var q=cart[cartKey]||0;
@@ -571,6 +580,7 @@ function selectSize(itemId,sizeIdx,price,maxStock){
   if(!cart[cartKey])cart[cartKey]=0;
   cart[cartKey]=Math.min(cart[cartKey]+1,parseInt(maxStock)||999);
   updateBadge();updateBB();
+  // refresh page
   var el=document.getElementById('sizeqty-'+itemId);
   if(el){
     var it=findP(itemId);if(!it||!it.sizes)return;
@@ -580,6 +590,7 @@ function selectSize(itemId,sizeIdx,price,maxStock){
     });
     el.innerHTML=qh;
   }
+  // highlight selected button
   var btns=document.querySelectorAll('#sizes-'+itemId+' .size-btn');
   btns.forEach(function(b,i){b.classList.toggle('active',i===sizeIdx)});
   setTimeout(function(){btns.forEach(function(b){b.classList.remove('active')})},500);
@@ -623,7 +634,7 @@ function getLocation(){var btn=document.getElementById('locBtn');btn.innerHTML='
 // SLIP
 function handleSlip(input){if(!input.files||!input.files[0])return;var reader=new FileReader();reader.onload=function(e){custSlipImg=e.target.result;
   var a=document.getElementById('slipArea');a.innerHTML='<img src="'+custSlipImg+'"><button class="remove-img" onclick="event.stopPropagation();clearSlip()">✕</button>';a.classList.add('has-img');showToast('แนบสลิปแล้ว ✅')};reader.readAsDataURL(input.files[0]);input.value=''}
-function clearSlip(){custSlipImg='';var a=document.getElementById('slipArea');a.innerHTML='<span style="font-size:48px">🧾</span><span style="font-family:'Prompt';font-weight:600;font-size:14px;color:var(--text-light)">กดเพื่อแนบสลิป</span>';a.classList.remove('has-img')}
+function clearSlip(){custSlipImg='';var a=document.getElementById('slipArea');a.innerHTML='<span style="font-size:48px">🧾</span><span style="font-family:Prompt;font-weight:600;font-size:14px;color:var(--text-light)">กดเพื่อแนบสลิป</span>';a.classList.remove('has-img')}
 
 // CONFIRM ORDER
 function confirmOrder(){
@@ -631,6 +642,7 @@ function confirmOrder(){
   var phone=document.getElementById('custPhone').value.trim();if(!phone){showToast('กรุณากรอกเบอร์โทร 📞');document.getElementById('custPhone').focus();return}
   if(!custLat||!custLng){showToast('กรุณากดแชร์พิกัด GPS ก่อน 📍');return}
   if(payMethod==='now'&&!custSlipImg){showToast('กรุณาแนบสลิปโอนเงิน 🧾');return}
+  // ★ ตรวจสต็อกก่อนสั่ง
   for(var sid in cart){var sp=findP(sid);
     if(sp&&sp.stock!==undefined&&sp.stock!==''&&sp.stock!==null){
       if(sp.stock===0){showToast('❌ '+sp.name+' สินค้าหมดแล้ว');return}
@@ -646,6 +658,7 @@ function confirmOrder(){
   var msg='ออเดอร์ของ '+name;if(dept)msg+=' ('+dept+')';if(addr)msg+='<br>💬 '+addr;
   msg+='<br>ยอดรวม ฿'+total.toLocaleString();msg+=payMethod==='later'?'<br>💸 จ่ายวันที่ 25':payMethod==='cash'?'<br>💵 จ่ายเงินสดตอนรับของ':'<br>✅ จ่ายแล้ว (แนบสลิป)';msg+='<br><br>รอรับของได้เลยนะครับ 🚛';
   document.getElementById('successMsg').innerHTML=msg;
+  // สร้าง cartItems สำหรับลดสต็อก
   var cartItems=[];for(var cid in cart){cartItems.push({id:cid,qty:cart[cid]})}
   apiPost({action:'newOrder',date:new Date().toLocaleString('th-TH'),orderId:oid,name:name,dept:dept,phone:phone,
     items:oi.map(function(i){return i.emoji+i.name+'x'+i.qty}).join(', '),total:total,
@@ -654,13 +667,14 @@ function confirmOrder(){
   showPage('successPage');updateBB()}
 function resetAll(){cart={};payMethod='now';custSlipImg='';custLat='';custLng='';['custName','custDept','custPhone','custAddr'].forEach(function(id){document.getElementById(id).value=''});updateBadge();goHome()}
 
-// ADMIN
+// ★ ADMIN ★
 function openAdminLogin(){openModal('<h3>🔐 เข้าสู่ระบบ Admin</h3><div class="input-group"><label class="input-label">รหัสผ่าน</label><input class="input-field" type="password" id="adminPassInput" placeholder="รหัสผ่าน" onkeydown="if(event.key===\'Enter\')doLogin()"></div><button class="btn-primary" onclick="doLogin()">🔓 เข้าสู่ระบบ</button><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-light)">รหัสเริ่มต้น: 1234</div>');
   setTimeout(function(){var el=document.getElementById('adminPassInput');if(el)el.focus()},300)}
 function doLogin(){var input=document.getElementById('adminPassInput').value;var pass=String(settings.adminPass||'1234');
   if(input===pass){closeModal();openAdmin()}else showToast('รหัสผ่านไม่ถูกต้อง ❌')}
 async function openAdmin(){
   showPage('adminPage');updateBB();
+  // ★ โหลดข้อมูลล่าสุดจาก Sheets ก่อนเสมอ (ป้องกัน overwrite)
   showSyncStatus('loading','กำลังโหลดข้อมูลล่าสุด...');
   var p=await apiGet('getProducts');
   if(p&&p.cats){cats=p.cats;localStorage.setItem('of_cache',JSON.stringify(cats))}
@@ -685,6 +699,7 @@ function toggleCatAdmin(cid){var el=document.getElementById('admin-items-'+cid);
   var toggle=el.previousElementSibling.querySelector('.admin-cat-toggle');
   el.classList.toggle('collapsed');toggle.classList.toggle('collapsed')}
 
+// ADMIN CRUD - ใช้ global var ป้องกัน escape bug
 function openAddCatModal(){tempUploadImg='';openModal('<h3>➕ เพิ่มหมวดหมู่</h3><div class="input-group"><label class="input-label">ชื่อ</label><input class="input-field" id="m_cn" placeholder="เช่น เครื่องดื่ม"></div><div class="input-group"><label class="input-label">Emoji</label><input class="input-field" id="m_ce" placeholder="🥤"></div>'+uploadHTML('')+'<button class="btn-primary btn-success" onclick="doAddCat()">✅ เพิ่ม</button>')}
 function doAddCat(){var n=document.getElementById('m_cn').value.trim();if(!n){showToast('กรุณาใส่ชื่อ');return}
   cats['cat_'+Date.now().toString(36)]={name:n,emoji:document.getElementById('m_ce').value.trim()||'📦',img:tempUploadImg,items:[]};
@@ -744,7 +759,7 @@ function saveSettings(){
   var np=document.getElementById('adminNewPass').value.trim();if(np)settings.adminPass=np;
   apiPost({action:'saveSettings',settings:settings});showToast('บันทึกตั้งค่าแล้ว ✅')}
 
-// ANNOUNCEMENT
+// ★ ANNOUNCEMENT (inline on homepage) ★
 async function loadAnnouncement(){
   var a=await apiGet('getAnnouncement');
   if(a&&a.announcement)announcement=a.announcement;
@@ -764,7 +779,7 @@ function renderAnnouncement(){
   h+='</div></div>';
   el.innerHTML=h}
 
-// LINE Browser Detection
+// ★ LINE Browser Detection ★
 function checkLineBrowser(){
   var ua=navigator.userAgent||'';
   var isLine=/Line\//i.test(ua);
@@ -795,7 +810,7 @@ function saveAnnouncement(){
   announcement.img=annImg;
   apiPost({action:'saveAnnouncement',announcement:announcement});showToast('บันทึกประกาศแล้ว ✅')}
 
-// ORDER SUMMARY
+// ★ ORDER SUMMARY ★
 async function loadOrderSummary(){
   var from=document.getElementById('sumFrom').value;
   var to=document.getElementById('sumTo').value;
@@ -803,6 +818,7 @@ async function loadOrderSummary(){
   var el=document.getElementById('orderSummaryResult');
   el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">⏳ กำลังโหลด...</div>';
   
+  // ใช้ GET with proper URL encoding
   var url=API+'?action=getOrders&from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to);
   var r=null;
   try{
@@ -813,25 +829,29 @@ async function loadOrderSummary(){
   
   if(!r||!r.orders){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">❌ โหลดไม่ได้ ลองใหม่อีกครั้ง</div>';return}
   
+  // Filter by date on client side
   var fromD=new Date(from);fromD.setHours(0,0,0,0);
   var toD=new Date(to);toD.setHours(23,59,59,999);
   var orders=r.orders.filter(function(o){
     var ds=o.date;
+    // Parse "8/2/2569 11:54:10" or "8/2/2569, 11:54:10" → Thai Buddhist Era
     var parts=ds.match(/(\d+)\/(\d+)\/(\d+)/);
     if(parts){
       var day=parseInt(parts[1]);
       var mon=parseInt(parts[2])-1;
       var yr=parseInt(parts[3]);
-      if(yr>2500)yr-=543;
+      if(yr>2500)yr-=543; // พ.ศ. → ค.ศ.
       var d=new Date(yr,mon,day);
       return d>=fromD&&d<=toD;
     }
+    // Fallback: try native parse
     var d2=new Date(ds);
     if(!isNaN(d2.getTime()))return d2>=fromD&&d2<=toD;
-    return true;
+    return true; // parse ไม่ได้ → แสดงไว้ก่อน
   });
   if(!orders.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-light)">ไม่มีออเดอร์ในช่วงนี้</div>';return}
   
+  // สร้างลิสรายการ
   var h='';
   var grandTotal=0;
   var shoppingList={};
@@ -840,8 +860,10 @@ async function loadOrderSummary(){
     grandTotal+=o.total;
     h+='<div class="summary-item"><div class="summary-item-header"><span class="summary-item-name">'+o.name+(o.dept?' ('+o.dept+')':'')+'</span><span class="summary-item-total">฿'+o.total.toLocaleString()+'</span></div><div class="summary-item-items">'+o.items+'</div><div style="font-size:12px;color:var(--text-light)">'+o.date+(o.time?' '+o.time:'')+(o.phone?' • 📞'+o.phone:'')+' • '+o.payment+'</div></div>';
     
+    // รวมรายการสินค้าสำหรับไปซื้อ
     if(o.items){
       o.items.split(', ').forEach(function(item){
+        // Parse: "🦐กุ้งสดx2" → name="กุ้งสด", qty=2
         var m=item.match(/(.+?)x(\d+)$/);
         if(m){
           var name=m[1].replace(/^[\u{1F000}-\u{1FFFF}]/u,'').trim();
@@ -853,8 +875,10 @@ async function loadOrderSummary(){
     }
   });
   
+  // สรุปยอดรวม
   var result='<div class="summary-totals"><div class="summary-totals-num">'+orders.length+' ออเดอร์ • ฿'+grandTotal.toLocaleString()+'</div><div class="summary-totals-label">'+from+' ถึง '+to+'</div></div>';
   
+  // ลิสต์ของที่ต้องซื้อ
   result+='<div class="summary-shopping"><h4>🛒 รายการที่ต้องไปซื้อ</h4>';
   var shopKeys=Object.keys(shoppingList);
   if(shopKeys.length){
@@ -864,12 +888,15 @@ async function loadOrderSummary(){
   }else{result+='<div style="color:var(--text-light);font-size:13px">ไม่มีรายการ</div>'}
   result+='</div>';
   
+  // ปุ่มส่ง LINE
   result+='<button class="btn-primary btn-line" onclick="sendSummaryLine()" style="margin-top:14px">📲 ส่งรายการซื้อของไป LINE</button>';
   
+  // รายการออเดอร์
   result+='<div style="margin-top:14px;font-family:Prompt;font-weight:700;font-size:15px">📋 รายละเอียดออเดอร์</div><div class="summary-list">'+h+'</div>';
   
   el.innerHTML=result;
   
+  // เก็บข้อมูลไว้สำหรับส่ง LINE
   window._summaryData={from:from,to:to,orders:orders,grandTotal:grandTotal,shoppingList:shoppingList};
 }
 
@@ -897,110 +924,6 @@ async function sendSummaryLine(){
 
 // INIT
 loadData();
-
-// ────────────────────────────────────────────────
-//          ส่วนใหม่: บังคับเปิด Chrome เมื่ออยู่ใน LINE
-// ────────────────────────────────────────────────
-
-function isLineInApp() {
-    var ua = (navigator.userAgent || '').toLowerCase();
-    return ua.includes('line');
-}
-
-function tryOpenInChrome() {
-    const url = window.location.href;
-    
-    // Android Chrome Intent (แนะนำที่สุด)
-    let intentUrl = `intent:${url}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(url)};end`;
-    
-    // Universal Chrome scheme (รองรับบางกรณี)
-    let chromeScheme = `googlechrome:${url.replace(/^https?:\/\//, '//')}`;
-    
-    // พยายามเปิดด้วย Intent ก่อน
-    let link = document.createElement('a');
-    link.href = intentUrl;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // ลองอีกวิธีหลังหน่วงเวลา
-    setTimeout(() => {
-        let link2 = document.createElement('a');
-        link2.href = chromeScheme;
-        link2.style.display = 'none';
-        document.body.appendChild(link2);
-        link2.click();
-        document.body.removeChild(link2);
-    }, 700);
-}
-
-function showForceChromeOverlay() {
-    if (document.getElementById('line-force-overlay')) return;
-    
-    const overlay = document.createElement('div');
-    overlay.id = 'line-force-overlay';
-    overlay.style.cssText = `
-        position: fixed; inset: 0; z-index: 999999;
-        background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
-        display: flex; align-items: center; justify-content: center;
-        color: white; font-family: 'Prompt', sans-serif; text-align: center;
-        padding: 30px;
-    `;
-    
-    overlay.innerHTML = `
-        <div style="max-width: 380px;">
-            <div style="font-size: 70px; margin-bottom: 20px;">🚫</div>
-            <h2 style="font-size: 26px; margin: 0 0 16px;">ไม่แนะนำให้ใช้ใน LINE</h2>
-            <p style="font-size: 16px; line-height: 1.6; margin: 0 0 28px; opacity: 0.9;">
-                การกดปุ่มย้อนกลับของมือถือจะทำให้ออกจากหน้าร้านทันที<br>
-                กรุณาเปิดใน <strong>Google Chrome</strong> เพื่อใช้งานได้เต็มที่
-            </p>
-            <button id="btnOpenChrome" style="
-                background: #DB4437; color: white; border: none;
-                padding: 18px 40px; font-size: 20px; font-weight: 700;
-                border-radius: 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(219,68,55,0.4);
-                transition: all 0.2s;
-            ">
-                เปิดใน Chrome ทันที →
-            </button>
-            <div style="margin-top: 28px; font-size: 14px; opacity: 0.7;">
-                หรือคัดลอกลิงก์นี้ไปวางใน Chrome เองก็ได้ครับ
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    document.getElementById('btnOpenChrome').onclick = function() {
-        this.innerHTML = "กำลังเปิด Chrome...";
-        this.style.background = "#34A853";
-        tryOpenInChrome();
-        setTimeout(() => {
-            this.innerHTML = "หากยังไม่เปิด → กดอีกครั้ง";
-        }, 2000);
-    };
-}
-
-// เรียกตอนโหลดหน้า
-window.addEventListener('load', () => {
-    if (isLineInApp()) {
-        setTimeout(showForceChromeOverlay, 800);
-        showToast("⚠️ แนะนำเปิดใน Chrome เพื่อไม่ให้เด้งออก");
-    }
-});
-
-// ตรวจซ้ำทุก 4 วินาที
-setInterval(() => {
-    if (isLineInApp() && !document.getElementById('line-force-overlay')) {
-        showForceChromeOverlay();
-    }
-}, 4000);
-
-// ────────────────────────────────────────────────
-//          จบส่วนใหม่
-// ────────────────────────────────────────────────
-
 </script>
 </body>
 </html>
