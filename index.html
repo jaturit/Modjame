@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+<script>
+// ===== FORCE OPEN OUTSIDE LINE =====
+(function() {
+  var ua = navigator.userAgent || '';
+  var isLine = ua.indexOf("Line/") !== -1;
+
+  if (isLine) {
+    var url = window.location.href;
+
+    // Android → เปิดผ่าน Intent ไป Chrome
+    if (/Android/i.test(ua)) {
+      var clean = url.replace(/^https?:\/\//, '');
+      window.location.replace("intent://" + clean + "#Intent;scheme=https;package=com.android.chrome;end");
+    }
+    // iOS → เปิด Safari
+    else if (/iPhone|iPad|iPod/i.test(ua)) {
+      window.location.replace(url);
+    }
+  }
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>OFFICE FEAST - สั่งของสดจากตลาด</title>
@@ -263,8 +285,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 <div class="page" id="checkoutPage">
   <button class="back-btn" onclick="showCart()">← กลับตะกร้า</button>
   <div class="cat-header">💳 ชำระเงิน</div>
-  <div class="input-group"><label class="input-label">ชื่อเล่น</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
-  <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, โรงไหน"></div>
+  <div class="input-group"><label class="input-label">ชื่อ - นามสกุล</label><input class="input-field" type="text" id="custName" placeholder="ชื่อของคุณ"></div>
+  <div class="input-group"><label class="input-label">แผนก / ตำแหน่ง</label><input class="input-field" type="text" id="custDept" placeholder="เช่น ฝ่ายผลิต, QC"></div>
   <div class="input-group"><label class="input-label">เบอร์โทร</label><input class="input-field" type="tel" id="custPhone" placeholder="08X-XXX-XXXX"></div>
   <div style="margin-top:20px">
     <div class="input-label">💬 หมายเหตุ / ข้อความถึงร้าน</div>
@@ -367,7 +389,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <script>
 // ★★★ CONFIG - ใส่ URL ของ Apps Script ที่ Deploy แล้ว ★★★
-var API='https://script.google.com/macros/s/AKfycby4PXa-NrnVkKwdK2QV3kXSKbAf_EX00c-wK1RoHyBCLG2zN7VH1cixm66ksn9nmKq1sQ/exec';
+var API='https://script.google.com/macros/s/AKfycbzVBHbJDuoZFurSDc7qgNtdb9zl2EnXYdVuc474ivu8q0KuwH378FkvKNbRTzB8D62WJA/exec';
 
 var cats={},settings={laterFee:20,adminPass:'1234',qrImg:''},cart={},payMethod='now';
 var custSlipImg='',custLat='',custLng='';
@@ -924,6 +946,40 @@ async function sendSummaryLine(){
 
 // INIT
 loadData();
+
+// ===== LINE Browser Fix (Auto Redirect + Back Button Protection) =====
+document.addEventListener("DOMContentLoaded", function () {
+  var ua = navigator.userAgent || '';
+  var isLine = ua.indexOf("Line/") !== -1;
+
+  // กันปุ่ม Back เด้งออกทันที
+  if (isLine) {
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
+      history.pushState(null, null, location.href);
+      showPage('homePage');
+    });
+
+    // แสดงปุ่มเปิดใน Browser จริง
+    var warnBox = document.getElementById("lineBrowserWarn");
+    if (warnBox) {
+      warnBox.innerHTML =
+        '<div class="line-warn">' +
+        '⚠️ เพื่อใช้งานได้เต็มประสิทธิภาพ กรุณาเปิดในเบราว์เซอร์<br>' +
+        '<a href="' + location.href + '" target="_blank">👉 กดเปิดใน Browser</a>' +
+        '</div>';
+    }
+
+    // พยายามเปิด Chrome (Android)
+    setTimeout(function(){
+      if (/Android/i.test(ua)) {
+        var url = location.href.replace(/^https?:\/\//, '');
+        window.location.href = "intent://" + url + "#Intent;scheme=https;package=com.android.chrome;end";
+      }
+    }, 1500);
+  }
+});
+
 </script>
 </body>
 </html>
