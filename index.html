@@ -925,23 +925,43 @@ async function sendSummaryLine(){
 // INIT
 loadData();
 </script>
- <script>
-// ===== LINE BACK BUTTON → GO HOME (NO REDIRECT) =====
+<script>
+// ===== FORCE OPEN IN CHROME + CONTROL BACK =====
 (function () {
 
   var ua = navigator.userAgent || "";
   var isLine = ua.indexOf("Line/") !== -1;
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/i.test(ua);
 
-  if (!isLine) return; // ทำงานเฉพาะใน LINE เท่านั้น
+  var url = window.location.href;
 
-  // ดัน history 1 ชั้นกันออกทันที
+  // ===== 1) ถ้าเปิดใน LINE → เด้งไป Chrome =====
+  if (isLine) {
+
+    // Android → Chrome ผ่าน intent
+    if (isAndroid) {
+      var clean = url.replace(/^https?:\/\//, "");
+      window.location.replace(
+        "intent://" + clean + "#Intent;scheme=https;package=com.android.chrome;end"
+      );
+      return;
+    }
+
+    // iOS → Safari (LINE บางเวอร์ชันจะไม่ยอม auto)
+    if (isIOS) {
+      window.location.replace(url);
+      return;
+    }
+  }
+
+  // ===== 2) ถ้าอยู่ใน Chrome → คุมปุ่ม Back =====
   history.pushState({page:"init"}, "", location.href);
 
   window.addEventListener("popstate", function () {
 
-    // ถ้ามีฟังก์ชัน showPage (ของคุณมีแน่นอน)
     if (typeof showPage === "function") {
-      showPage("homePage");   // กลับหน้า Home
+      showPage("homePage"); // กลับหน้า Home
       history.pushState({page:"home"}, "", location.href);
     }
 
